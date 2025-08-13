@@ -5,6 +5,7 @@ import "./globals.css";
 import PromotionalBanner from "./components/PromotionalBanner";
 import NavigationBar from "./components/NavigationBar";
 import Footer from "./components/Footer";
+import { CartProvider } from "./context/CartContext"; // ✅ Import the cart context provider
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,12 +32,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <PromotionalBanner />
-        <NavigationBar />
-        <div className="min-h-screen">
-          {children}
-        </div>
-        <Footer />
+        {/* ✅ Make CartProvider wrap everything so cart state is global */}
+        <CartProvider>
+          <PromotionalBanner />
+          <NavigationBar />
+          <div className="min-h-screen">
+            {children}
+          </div>
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );
