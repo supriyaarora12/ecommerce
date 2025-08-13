@@ -17,8 +17,8 @@ export default function NavigationBar() {
                 {/* Navigation links */}
                 <div className="flex items-center space-x-8">
                     <Link href="/" className="text-gray-700 hover:text-black transition-colors">Home</Link>
-                    <Link href="#" className="text-gray-700 hover:text-black transition-colors">Contact</Link>
-                    <Link href="#" className="text-gray-700 hover:text-black transition-colors">About</Link>
+                    <Link href="/contact" className="text-gray-700 hover:text-black transition-colors">Contact</Link>
+                    <Link href="/about" className="text-gray-700 hover:text-black transition-colors">About</Link>
                     <Link href="/signup" className="text-gray-700 hover:text-black transition-colors">Sign Up</Link>
                 </div>
 
