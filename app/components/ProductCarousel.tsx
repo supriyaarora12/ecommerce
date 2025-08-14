@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Product from './Product';
+import Link from 'next/link';
 
 interface ProductData {
   id: number;
@@ -118,11 +119,16 @@ export default function ProductCarousel({
           style={{ transform: `translateX(-${currentIndex * 280}px)` }}
         >
           {products.map((product) => (
-            <Product
+            <Link
               key={product.id}
-              {...product}
-              showAddToCart={showAddToCart}
-            />
+              href={`/product/${product.id}`}
+              className="block"
+            >
+              <Product
+                {...product}
+                showAddToCart={showAddToCart}
+              />
+            </Link>
           ))}
         </div>
       </div>
