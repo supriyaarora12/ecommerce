@@ -13,6 +13,7 @@ interface ProductProps {
   rating: number;
   reviews: number;
   image: string;
+  
   showAddToCart?: boolean;
 }
 
@@ -25,6 +26,7 @@ export default function Product({
   rating,
   reviews,
   image,
+  
   showAddToCart = true
 }: ProductProps) {
   const { addToCart } = useCart(); 
@@ -128,6 +130,7 @@ export default function Product({
                   rating,
                   reviews,
                   image,
+                  
                   price: discountedPrice,
                   quantity: 1
                 });
