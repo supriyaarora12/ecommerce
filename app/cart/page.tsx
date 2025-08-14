@@ -1,11 +1,13 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { useCart } from '../context/CartContext';
-import Link from 'next/link';
+import Image from "next/image";
+import { useCart } from "../context/CartContext";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function CartPage() {
   const { cart, updateQuantity, removeFromCart } = useCart();
+  const router = useRouter();
 
   const subtotal = cart.reduce(
     (acc, item) => acc + item.discountedPrice * item.quantity,
@@ -16,7 +18,10 @@ export default function CartPage() {
     <div className="max-w-7xl mx-auto px-4 py-12">
       {/* Breadcrumb */}
       <nav className="mb-8 text-sm text-gray-500">
-        <Link href="/" className="hover:underline">Home</Link> / <span className="text-gray-800">Cart</span>
+        <Link href="/" className="hover:underline">
+          Home
+        </Link>{" "}
+        / <span className="text-gray-800">Cart</span>
       </nav>
 
       {/* Cart Table */}
@@ -28,6 +33,7 @@ export default function CartPage() {
               <th className="p-4">Price</th>
               <th className="p-4">Quantity</th>
               <th className="p-4">Subtotal</th>
+              <th className="p-4"></th>
             </tr>
           </thead>
           <tbody>
@@ -53,7 +59,9 @@ export default function CartPage() {
                   <td className="p-4">
                     <select
                       value={item.quantity}
-                      onChange={(e) => updateQuantity(item.id, Number(e.target.value))}
+                      onChange={(e) =>
+                        updateQuantity(item.id, Number(e.target.value))
+                      }
                       className="border border-gray-300 rounded px-2 py-1"
                     >
                       {[...Array(10)].map((_, i) => (
@@ -65,12 +73,27 @@ export default function CartPage() {
                   </td>
 
                   {/* Subtotal */}
-                  <td className="p-4">${item.discountedPrice * item.quantity}</td>
+                  <td className="p-4">
+                    ${item.discountedPrice * item.quantity}
+                  </td>
+
+                  {/* Remove Button */}
+                  <td className="p-4">
+                    <button
+                      onClick={() => removeFromCart(item.id)}
+                      className="text-red-500 hover:underline"
+                    >
+                      Remove
+                    </button>
+                  </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan={4} className="p-6 text-center text-gray-500">
+                <td
+                  colSpan={5}
+                  className="p-6 text-center text-gray-500"
+                >
                   Your cart is empty.
                 </td>
               </tr>
@@ -121,12 +144,12 @@ export default function CartPage() {
             <span>Total:</span>
             <span>${subtotal}</span>
           </div>
-          <Link
-            href="/checkout"
+          <button
+            onClick={() => router.push("/checkout")}
             className="bg-red-500 text-white w-full block text-center py-3 mt-6 rounded hover:bg-red-600"
           >
             Proceed to Checkout
-          </Link>
+          </button>
         </div>
       </div>
     </div>

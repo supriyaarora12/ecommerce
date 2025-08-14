@@ -3,22 +3,25 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishListContext'; 
 
 export default function NavigationBar() {
   const [searchQuery, setSearchQuery] = useState('');
-  const { cart } = useCart(); // ✅ get cart from context
+  const { cart } = useCart();
+  const { wishlist } = useWishlist(); 
 
   return (
     <nav className="bg-white border-b border-gray-200">
       <div className="max-w-[1330px] w-full px-8 mx-auto flex items-center justify-between py-4">
-        {/* Brand name */}
+        
+        {/* Brand */}
         <div className="flex items-center">
           <Link href="/" className="text-2xl font-bold text-black">
             Exclusive
           </Link>
         </div>
 
-        {/* Navigation links */}
+        {/* Links */}
         <div className="flex items-center space-x-8">
           <Link href="/" className="text-gray-700 hover:text-black transition-colors">
             Home
@@ -34,9 +37,10 @@ export default function NavigationBar() {
           </Link>
         </div>
 
-        {/* Search bar and icons */}
+        {/* Search & Icons */}
         <div className="flex items-center space-x-4">
-          {/* Search bar */}
+          
+          {/* Search */}
           <div className="relative">
             <input
               type="text"
@@ -62,8 +66,11 @@ export default function NavigationBar() {
             </button>
           </div>
 
-          {/* Heart icon */}
-          <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+          {/* Wishlist (Heart) */}
+          <Link
+            href="/wishlist"
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors relative"
+          >
             <svg
               className="w-6 h-6 text-gray-700"
               fill="none"
@@ -77,9 +84,14 @@ export default function NavigationBar() {
                 d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
               />
             </svg>
-          </button>
+            {wishlist.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                {wishlist.length}
+              </span>
+            )}
+          </Link>
 
-          {/* Shopping cart icon */}
+          {/* Cart */}
           <Link
             href="/cart"
             className="p-2 hover:bg-gray-100 rounded-full transition-colors relative"
@@ -97,7 +109,6 @@ export default function NavigationBar() {
                 d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
               />
             </svg>
-            {/* Cart badge */}
             {cart.length > 0 && (
               <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 {cart.length}
