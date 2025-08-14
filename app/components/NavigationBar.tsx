@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishListContext'; 
+import AccountDropdown from "../components/AccountDropdown";
 
 export default function NavigationBar() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -115,6 +116,8 @@ export default function NavigationBar() {
               </span>
             )}
           </Link>
+                 {/* Account Dropdown */}
+        <AccountDropdown />
         </div>
       </div>
     </nav>
