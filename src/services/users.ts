@@ -14,6 +14,17 @@ export interface User {
     zip: string;
     country: string;
   }[];
+  billingDetails?: {
+    firstName: string;
+    lastName: string;
+    companyName?: string;
+    streetAddress: string;
+    apartment?: string;
+    townCity: string;
+    phoneNumber: string;
+    emailAddress: string;
+  };
+  orders?: string[]; // Array of order IDs
   createdAt: string;
   updatedAt: string;
 }
@@ -32,4 +43,19 @@ export async function getUser(uid: string): Promise<User | null> {
 // Update user
 export async function updateUser(uid: string, data: Partial<User>) {
   await updateDoc(doc(db, "users", uid), data);
+}
+
+// Add order to user's orders array
+export async function addOrderToUser(uid: string, orderId: string) {
+  const user = await getUser(uid);
+  if (user) {
+    const orders = user.orders || [];
+    orders.push(orderId);
+    await updateUser(uid, { orders });
+  }
+}
+
+// Save billing details to user profile
+export async function saveBillingDetails(uid: string, billingDetails: User['billingDetails']) {
+  await updateUser(uid, { billingDetails });
 }

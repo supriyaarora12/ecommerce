@@ -85,6 +85,9 @@ export default function ManageAccount() {
               <div>
                 <h3 className="text-sm font-medium mb-2">My Orders</h3>
                 <ul className="space-y-1 text-sm">
+                  <li>
+                    <a href="/orders" className="text-red-500 hover:text-red-600">View All Orders</a>
+                  </li>
                   <li className="text-gray-400">My Returns</li>
                   <li className="text-gray-400">My Cancellations</li>
                 </ul>

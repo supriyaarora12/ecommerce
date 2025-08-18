@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishListContext";
 import { AuthProvider } from"../src/context/AuthContext"; // ✅ import AuthProvider
+import { AdminProvider } from "../src/context/AdminContext"; // ✅ import AdminProvider
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,14 +38,16 @@ export default function RootLayout({
       >
         {/* ✅ AuthProvider should wrap everything so that auth context is available globally */}
         <AuthProvider>
-          <WishlistProvider>
-            <CartProvider>
-              <PromotionalBanner />
-              <NavigationBar />
-              <div className="min-h-screen">{children}</div>
-              <Footer />
-            </CartProvider>
-          </WishlistProvider>
+          <AdminProvider>
+            <WishlistProvider>
+              <CartProvider>
+                <PromotionalBanner />
+                <NavigationBar />
+                <div className="min-h-screen">{children}</div>
+                <Footer />
+              </CartProvider>
+            </WishlistProvider>
+          </AdminProvider>
         </AuthProvider>
       </body>
     </html>

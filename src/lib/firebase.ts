@@ -35,7 +35,7 @@ if (!firebaseConfig.apiKey || !firebaseConfig.authDomain || !firebaseConfig.proj
 }
 
 let app: FirebaseApp;
-let analytics: Analytics;
+let analytics: Analytics | null = null;
 let db: Firestore;
 let storage: FirebaseStorage;
 let auth: Auth;
@@ -44,7 +44,12 @@ let googleProvider: GoogleAuthProvider;
 try {
   // Initialize Firebase
   app = initializeApp(firebaseConfig);
-  analytics = getAnalytics(app);
+  
+  // Only initialize analytics on the client side
+  if (typeof window !== 'undefined') {
+    analytics = getAnalytics(app);
+  }
+  
   db = getFirestore(app);
   storage = getStorage(app);
   auth = getAuth(app);
@@ -56,4 +61,4 @@ try {
   throw error;
 }
 
-export { db, storage, auth, googleProvider };
+export { db, storage, auth, googleProvider, analytics };

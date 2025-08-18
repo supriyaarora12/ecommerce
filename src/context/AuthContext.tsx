@@ -11,11 +11,25 @@ import {
   signInWithPopup,
 } from 'firebase/auth';
 import { auth, db, googleProvider } from '../lib/firebase';
-import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import { Timestamp , FieldValue } from "firebase/firestore";
 import { useRouter } from 'next/navigation';
 
 export type Address = { label: string; line1: string; city: string; state?: string; zip?: string; country?: string };
+
+export type CartItem = {
+  productId: string;
+  quantity: number;
+  name: string;
+  price: number;
+  image: string;
+  originalPrice: number;
+  discountedPrice: number;
+  discount: number;
+  rating: number;
+  reviews: number;
+};
+
 export type UserDoc = {
   uid: string;
   email: string | null;
@@ -23,6 +37,7 @@ export type UserDoc = {
   phone?: string | null;
   addresses?: Address[];
   photoURL?: string | null;
+  cart?: CartItem[];
   createdAt?:  Timestamp | FieldValue;
   updatedAt?:  Timestamp | FieldValue;
 };
@@ -35,6 +50,8 @@ type AuthContextType = {
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   saveUserDoc: (partial: Partial<UserDoc>) => Promise<void>;
+  updateUserCart: (cartItems: CartItem[]) => Promise<void>;
+  getUserCart: () => Promise<CartItem[]>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -58,6 +75,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             email: u.email,
             displayName: u.displayName,
             photoURL: u.photoURL,
+            cart: [],
             createdAt: serverTimestamp(),
             updatedAt: serverTimestamp(),
           };
@@ -102,8 +120,38 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
   };
 
+  const updateUserCart = async (cartItems: CartItem[]) => {
+    if (!auth.currentUser) throw new Error('Not authenticated');
+    const ref = doc(db, 'users', auth.currentUser.uid);
+    await updateDoc(ref, {
+      cart: cartItems,
+      updatedAt: serverTimestamp(),
+    });
+  };
+
+  const getUserCart = async (): Promise<CartItem[]> => {
+    if (!auth.currentUser) return [];
+    const ref = doc(db, 'users', auth.currentUser.uid);
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      const userData = snap.data() as UserDoc;
+      return userData.cart || [];
+    }
+    return [];
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, signUp, signIn, signInWithGoogle, signOut, saveUserDoc }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      loading, 
+      signUp, 
+      signIn, 
+      signInWithGoogle, 
+      signOut, 
+      saveUserDoc,
+      updateUserCart,
+      getUserCart
+    }}>
       {children}
     </AuthContext.Provider>
   );

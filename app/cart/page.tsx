@@ -2,11 +2,13 @@
 
 import Image from "next/image";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../../src/context/AuthContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function CartPage() {
-  const { cart, updateQuantity, removeFromCart } = useCart();
+  const { cart, updateQuantity, removeFromCart, loading, clearCart } = useCart();
+  const { user } = useAuth();
   const router = useRouter();
 
   const subtotal = cart.reduce(
@@ -14,8 +16,30 @@ export default function CartPage() {
     0
   );
 
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading your cart...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
+      {/* Debug Info - Remove this in production */}
+      {user && (
+        <div className="mb-6 p-4 bg-gray-100 rounded-lg">
+          <h3 className="font-semibold mb-2">Debug Info:</h3>
+          <p><strong>User ID:</strong> {user.uid}</p>
+          <p><strong>Email:</strong> {user.email}</p>
+          <p><strong>Cart Items:</strong> {cart.length}</p>
+          <p><strong>Total Value:</strong> ${subtotal}</p>
+        </div>
+      )}
+
       {/* Breadcrumb */}
       <nav className="mb-8 text-sm text-gray-500">
         <Link href="/" className="hover:underline">
@@ -110,9 +134,17 @@ export default function CartPage() {
         >
           Return To Shop
         </Link>
-        <button className="border border-gray-300 px-6 py-2 rounded hover:bg-gray-50">
-          Update Cart
-        </button>
+        <div className="flex gap-2">
+          <button 
+            onClick={clearCart}
+            className="border border-red-300 text-red-600 px-6 py-2 rounded hover:bg-red-50"
+          >
+            Clear Cart
+          </button>
+          <button className="border border-gray-300 px-6 py-2 rounded hover:bg-gray-50">
+            Update Cart
+          </button>
+        </div>
       </div>
 
       {/* Coupon + Cart Total */}
@@ -147,6 +179,7 @@ export default function CartPage() {
           <button
             onClick={() => router.push("/checkout")}
             className="bg-red-500 text-white w-full block text-center py-3 mt-6 rounded hover:bg-red-600"
+            disabled={cart.length === 0}
           >
             Proceed to Checkout
           </button>
