@@ -4,12 +4,14 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishListContext'; 
+import { useAuth } from '../../src/context/AuthContext';
 import AccountDropdown from "../components/AccountDropdown";
 
 export default function NavigationBar() {
   const [searchQuery, setSearchQuery] = useState('');
   const { cart } = useCart();
   const { wishlist } = useWishlist(); 
+  const { user, loading } = useAuth();
 
   return (
     <nav className="bg-white border-b border-gray-200">
@@ -33,9 +35,16 @@ export default function NavigationBar() {
           <Link href="/about" className="text-gray-700 hover:text-black transition-colors">
             About
           </Link>
-          <Link href="/signup" className="text-gray-700 hover:text-black transition-colors">
-            Sign Up
-          </Link>
+          {!loading && !user && (
+            <>
+              <Link href="/login" className="text-gray-700 hover:text-black transition-colors">
+                Login
+              </Link>
+              <Link href="/signup" className="text-gray-700 hover:text-black transition-colors">
+                Sign Up
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Search & Icons */}
@@ -116,8 +125,9 @@ export default function NavigationBar() {
               </span>
             )}
           </Link>
-                 {/* Account Dropdown */}
-        <AccountDropdown />
+          
+          {/* Account Dropdown - Only show if user is logged in */}
+          {!loading && user && <AccountDropdown />}
         </div>
       </div>
     </nav>

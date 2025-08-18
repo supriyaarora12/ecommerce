@@ -1,3 +1,5 @@
+"use client";
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import {
   onAuthStateChanged,
@@ -11,6 +13,7 @@ import {
 import { auth, db, googleProvider } from '../lib/firebase';
 import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { Timestamp , FieldValue } from "firebase/firestore";
+import { useRouter } from 'next/navigation';
 
 export type Address = { label: string; line1: string; city: string; state?: string; zip?: string; country?: string };
 export type UserDoc = {
@@ -39,6 +42,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (u) => {
@@ -70,18 +74,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await updateProfile(cred.user, { displayName });
     }
     // user doc will be created by the auth state listener
+    router.push('/');
   };
 
   const signIn = async (email: string, password: string) => {
     await signInWithEmailAndPassword(auth, email, password);
+    router.push('/');
   };
 
   const signInWithGoogle = async () => {
     await signInWithPopup(auth, googleProvider);
+    router.push('/');
   };
 
   const signOut = async () => {
     await fbSignOut(auth);
+    router.push('/');
   };
 
   const saveUserDoc = async (partial: Partial<UserDoc>) => {
@@ -105,4 +113,4 @@ export const useAuth = () => {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error('useAuth must be used within <AuthProvider />');
   return ctx;
-};
+}

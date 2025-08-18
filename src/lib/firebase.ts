@@ -1,15 +1,11 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getFirestore } from "firebase/firestore";
-import { getStorage } from 'firebase/storage';
-import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+import { initializeApp, FirebaseApp } from "firebase/app";
+import { getAnalytics, Analytics } from "firebase/analytics";
+import { getFirestore, Firestore } from "firebase/firestore";
+import { getStorage, FirebaseStorage } from 'firebase/storage';
+import { getAuth, Auth, GoogleAuthProvider } from 'firebase/auth';
 
 // Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyBqO6NddlwE6UfJCVFmsTkVNOfZ3nztc7o",
   authDomain: "e-commerce-c0668.firebaseapp.com",
@@ -20,10 +16,44 @@ const firebaseConfig = {
   measurementId: "G-0BZPY6467T"
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-export const db = getFirestore(app);
-export const storage = getStorage(app);
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
+// Debug: Log the configuration
+console.log('Firebase Config Check:', {
+  apiKey: firebaseConfig.apiKey ? '✅ Present' : '❌ Missing',
+  authDomain: firebaseConfig.authDomain ? '✅ Present' : '❌ Missing',
+  projectId: firebaseConfig.projectId ? '✅ Present' : '❌ Missing',
+  storageBucket: firebaseConfig.storageBucket ? '✅ Present' : '❌ Missing',
+  messagingSenderId: firebaseConfig.messagingSenderId ? '✅ Present' : '❌ Missing',
+  appId: firebaseConfig.appId ? '✅ Present' : '❌ Missing',
+  measurementId: firebaseConfig.measurementId ? '✅ Present' : '❌ Missing'
+});
+
+console.log('Full Firebase Config:', firebaseConfig);
+
+// Check if all required environment variables are present
+if (!firebaseConfig.apiKey || !firebaseConfig.authDomain || !firebaseConfig.projectId) {
+  throw new Error('Missing Firebase configuration. Please check your environment variables.');
+}
+
+let app: FirebaseApp;
+let analytics: Analytics;
+let db: Firestore;
+let storage: FirebaseStorage;
+let auth: Auth;
+let googleProvider: GoogleAuthProvider;
+
+try {
+  // Initialize Firebase
+  app = initializeApp(firebaseConfig);
+  analytics = getAnalytics(app);
+  db = getFirestore(app);
+  storage = getStorage(app);
+  auth = getAuth(app);
+  googleProvider = new GoogleAuthProvider();
+  
+  console.log('✅ Firebase initialized successfully');
+} catch (error) {
+  console.error('❌ Firebase initialization failed:', error);
+  throw error;
+}
+
+export { db, storage, auth, googleProvider };

@@ -7,7 +7,8 @@ import NavigationBar from "./components/NavigationBar";
 import Footer from "./components/Footer";
 
 import { CartProvider } from "./context/CartContext";
-import { WishlistProvider } from "./context/WishListContext"; 
+import { WishlistProvider } from "./context/WishListContext";
+import { AuthProvider } from"../src/context/AuthContext"; // ✅ import AuthProvider
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,17 +35,17 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* ✅ Wrap with WishlistProvider → then CartProvider */}
-        <WishlistProvider>
-          <CartProvider>
-            <PromotionalBanner />
-            <NavigationBar />
-            <div className="min-h-screen">
-              {children}
-            </div>
-            <Footer />
-          </CartProvider>
-        </WishlistProvider>
+        {/* ✅ AuthProvider should wrap everything so that auth context is available globally */}
+        <AuthProvider>
+          <WishlistProvider>
+            <CartProvider>
+              <PromotionalBanner />
+              <NavigationBar />
+              <div className="min-h-screen">{children}</div>
+              <Footer />
+            </CartProvider>
+          </WishlistProvider>
+        </AuthProvider>
       </body>
     </html>
   );
