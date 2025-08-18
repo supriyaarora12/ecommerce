@@ -49,7 +49,7 @@ const NewArrivals = () => {
               className="object-cover"
             />
             <div className="absolute bottom-5 left-5 text-white">
-              <h3 className="text-lg font-bold mb-2">Women's Collections</h3>
+              <h3 className="text-lg font-bold mb-2"> Collections</h3>
               <p className="text-gray-300 mb-3 text-sm">
                 Featured woman collections that give you another vibe.
               </p>
