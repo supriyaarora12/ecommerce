@@ -9,23 +9,28 @@ import AccountDropdown from "../components/AccountDropdown";
 
 export default function NavigationBar() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { cart } = useCart();
   const { wishlist } = useWishlist(); 
   const { user, loading } = useAuth();
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
   return (
     <nav className="bg-white border-b border-gray-200">
-      <div className="max-w-[1330px] w-full px-8 mx-auto flex items-center justify-between py-4">
+      <div className="max-w-[1330px] w-full px-4 sm:px-8 mx-auto flex items-center justify-between py-4">
         
         {/* Brand */}
         <div className="flex items-center">
-          <Link href="/" className="text-2xl font-bold text-black">
+          <Link href="/" className="text-xl sm:text-2xl font-bold text-black">
             Exclusive
           </Link>
         </div>
 
-        {/* Links */}
-        <div className="flex items-center space-x-8">
+        {/* Desktop Navigation Links - Hidden below 930px */}
+        <div className="hidden lg:flex items-center space-x-8">
           <Link href="/" className="text-gray-700 hover:text-black transition-colors">
             Home
           </Link>
@@ -48,10 +53,10 @@ export default function NavigationBar() {
         </div>
 
         {/* Search & Icons */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2 sm:space-x-4">
           
-          {/* Search */}
-          <div className="relative">
+          {/* Search - Only show on desktop */}
+          <div className="hidden lg:block relative">
             <input
               type="text"
               placeholder="What are you looking for?"
@@ -82,7 +87,7 @@ export default function NavigationBar() {
             className="p-2 hover:bg-gray-100 rounded-full transition-colors relative"
           >
             <svg
-              className="w-6 h-6 text-gray-700"
+              className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -107,7 +112,7 @@ export default function NavigationBar() {
             className="p-2 hover:bg-gray-100 rounded-full transition-colors relative"
           >
             <svg
-              className="w-6 h-6 text-gray-700"
+              className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -128,8 +133,113 @@ export default function NavigationBar() {
           
           {/* Account Dropdown - Only show if user is logged in */}
           {!loading && user && <AccountDropdown />}
+
+          {/* Hamburger Menu Button - Show below 930px */}
+          <button
+            onClick={toggleMobileMenu}
+            className="lg:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
+          >
+            <svg
+              className="w-6 h-6 text-gray-700"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              {isMobileMenuOpen ? (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              ) : (
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              )}
+            </svg>
+          </button>
         </div>
       </div>
+
+      {/* Mobile Menu - Show when hamburger is clicked */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden bg-white border-t border-gray-200">
+          <div className="px-4 py-4 space-y-4">
+            {/* Mobile Search */}
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="What are you looking for?"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent"
+              />
+              <button className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                <svg
+                  className="w-5 h-5 text-gray-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </button>
+            </div>
+
+            {/* Mobile Navigation Links */}
+            <div className="flex flex-col space-y-3">
+              <Link 
+                href="/" 
+                className="text-gray-700 hover:text-black transition-colors py-2 border-b border-gray-100"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Home
+              </Link>
+              <Link 
+                href="/contact" 
+                className="text-gray-700 hover:text-black transition-colors py-2 border-b border-gray-100"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Contact
+              </Link>
+              <Link 
+                href="/about" 
+                className="text-gray-700 hover:text-black transition-colors py-2 border-b border-gray-100"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                About
+              </Link>
+              {!loading && !user && (
+                <>
+                  <Link 
+                    href="/login" 
+                    className="text-gray-700 hover:text-black transition-colors py-2 border-b border-gray-100"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Login
+                  </Link>
+                  <Link 
+                    href="/signup" 
+                    className="text-gray-700 hover:text-black transition-colors py-2 border-b border-gray-100"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }

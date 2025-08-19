@@ -64,7 +64,7 @@ export default function HeroCarousel() {
   };
 
   return (
-    <div className="relative w-full h-[500px] bg-black rounded-lg overflow-hidden">
+    <div className="relative w-full  bg-black rounded-lg overflow-hidden" style={{ aspectRatio: '21/8' }}>
       {/* Carousel Slides */}
       <div className="relative w-full h-full">
         {carouselSlides.map((slide, index) => (
@@ -82,7 +82,7 @@ export default function HeroCarousel() {
                   <img
                     src={slide.image}
                     alt={slide.subtitle}
-                    className=" object-cover"
+                    className="object-cover"
                   />
                 </div>
               </div>

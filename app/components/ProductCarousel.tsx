@@ -53,7 +53,7 @@ export default function ProductCarousel({
           <div className="flex items-center gap-4">
             {subtitle && (
               <div className="flex items-center gap-2">
-                <div className="w-5 rounded h-10 bg-red-500"></div>
+                <div className="w-5 h-10 rounded bg-red-500"></div>
                 <span className="text-gray-600 font-medium">{subtitle}</span>
               </div>
             )}
@@ -62,19 +62,19 @@ export default function ProductCarousel({
             )}
           </div>
           
-          {/* Countdown Timer */}
+          {/* Countdown Timer - Hidden on mobile */}
           {showCountdown && (
-            <div className="flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-2">
               {["Days", "Hours", "Minutes", "Seconds"].map((label, idx) => (
-                <div key={label} className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600">{label}</span>
-                  <div className="bg-gray-100 px-3 py-1 rounded">
-                    <span className="font-bold text-lg">
+                <div key={label} className="flex items-center gap-1">
+                  <span className="text-xs text-gray-600">{label}</span>
+                  <div className="bg-gray-100 px-2 py-1 rounded">
+                    <span className="font-bold text-sm">
                       {["03", "23", "19", "56"][idx]}
                     </span>
                   </div>
                   {idx < 3 && (
-                    <span className="text-red-500 font-bold text-xl">:</span>
+                    <span className="text-red-500 font-bold text-sm">:</span>
                   )}
                 </div>
               ))}
@@ -104,7 +104,6 @@ export default function ProductCarousel({
                   alt="Next"
                   width={32}
                   height={32}
-                  className="rotate-270"
                 />
               </button>
             </div>
