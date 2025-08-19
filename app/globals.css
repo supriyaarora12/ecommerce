@@ -28,3 +28,69 @@ body {
 .perfume {
   grid-area: D;
 }
+
+.gridContainerHome img {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  border-radius: 0.5rem;
+}
+
+/* Responsive Typography */
+h1, h2, h3, p {
+  margin: 0.5rem 0;
+}
+
+h1 {
+  font-size: clamp(1.5rem, 2.5vw, 3rem);
+}
+
+h2 {
+  font-size: clamp(1.25rem, 2vw, 2.5rem);
+}
+
+p {
+  font-size: clamp(1rem, 1.5vw, 1.25rem);
+}
+
+/* Tablet layout */
+@media (max-width: 1024px) {
+  .gridContainerHome {
+    grid-template-areas:
+      "A A"
+      "B C"
+      "D D";
+    padding: 1.5rem; /* reduced padding */
+  }
+}
+
+/* Mobile layout */
+@media (max-width: 768px) {
+  .gridContainerHome {
+    grid-template-areas:
+      "A"
+      "B"
+      "C"
+      "D";
+    gap: 0.75rem;
+    padding: 1rem; /* further reduced padding */
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+  h2 {
+    font-size: 1.25rem;
+  }
+  p {
+    font-size: 1rem;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+  .gridContainerHome {
+    padding: 0.5rem; /* smallest padding */
+    gap: 0.5rem;
+  }
+}

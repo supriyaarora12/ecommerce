@@ -43,7 +43,7 @@ const NewArrivals = () => {
         <div className="gridItemHome womens">
           <div className="relative bg-gray-900 rounded-lg overflow-hidden h-full">
             <Image
-              src="/ui/newarrival/lady.pg"
+              src="/ui/newarrival/lady.png"
               alt="Women's Collections"
               fill
               className="object-cover"
