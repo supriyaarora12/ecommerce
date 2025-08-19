@@ -3,25 +3,26 @@ import { useAuth } from '../../context/AuthContext';
 import { FirebaseError } from "firebase/app";
 import Image from 'next/image';
 import Link from 'next/link';
+import { useToast } from '../../../app/context/ToastContext';
 
 export default function LoginForm() {
   const { signIn, signInWithGoogle } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { showError, showSuccess } = useToast();
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       setLoading(true);
-      setError(null);
       await signIn(email.trim(), password);
+      showSuccess('Successfully logged in!');
     } catch (err) {
       if (err instanceof FirebaseError) {
-        setError(err.message);
+        showError(err.message);
       } else {
-        setError("Failed to sign in");
+        showError("Failed to sign in");
       }
     } finally {
       setLoading(false);
@@ -31,13 +32,13 @@ export default function LoginForm() {
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true);
-      setError(null);
       await signInWithGoogle();
+      showSuccess('Successfully logged in with Google!');
     } catch (err) {
       if (err instanceof FirebaseError) {
-        setError(err.message);
+        showError(err.message);
       } else {
-        setError("Failed to sign in with Google");
+        showError("Failed to sign in with Google");
       }
     } finally {
       setLoading(false);
@@ -69,7 +70,7 @@ export default function LoginForm() {
           />
         </div>
         
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+
         
         <div className="flex items-center justify-between">
           <button

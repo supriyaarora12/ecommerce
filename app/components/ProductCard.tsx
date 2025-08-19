@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishListContext"; 
 import { HeartIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { useToast } from "../context/ToastContext";
 
 interface ProductCardProps {
   id: number;
@@ -26,6 +27,7 @@ export default function ProductCard({
   const { addToCart } = useCart();
   const { wishlist, toggleWishlist, removeFromWishlist } = useWishlist();
   const [loading, setLoading] = useState(false);
+  const { showSuccess } = useToast();
 
   const inWishlist = wishlist.some((item) => item.id === id);
 
@@ -42,6 +44,7 @@ export default function ProductCard({
   reviews: 0,                
   quantity: 1 });
     setLoading(false);
+    // Toast notification is handled in CartContext
   };
 
   return (

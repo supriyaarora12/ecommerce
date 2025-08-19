@@ -2,25 +2,26 @@ import React, { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { FirebaseError } from "firebase/app";
 import Image from 'next/image';
+import { useToast } from '../../../app/context/ToastContext';
 
 export default function SignupForm() {
   const { signUp, signInWithGoogle } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const { showError, showSuccess } = useToast();
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       setLoading(true);
-      setError(null);
       await signUp(email.trim(), password);
+      showSuccess('Account created successfully!');
     } catch (err) {
       if (err instanceof FirebaseError) {
-        setError(err.message);
+        showError(err.message);
       } else {
-        setError("Failed to sign up");
+        showError("Failed to sign up");
       }
     } finally {
       setLoading(false);
@@ -30,13 +31,13 @@ export default function SignupForm() {
   const handleGoogleSignUp = async () => {
     try {
       setLoading(true);
-      setError(null);
       await signInWithGoogle();
+      showSuccess('Account created successfully with Google!');
     } catch (err) {
       if (err instanceof FirebaseError) {
-        setError(err.message);
+        showError(err.message);
       } else {
-        setError("Failed to sign up with Google");
+        showError("Failed to sign up with Google");
       }
     } finally {
       setLoading(false);
@@ -68,7 +69,7 @@ export default function SignupForm() {
           />
         </div>
         
-        {error && <p className="text-red-500 text-sm">{error}</p>}
+
         
         <button
           type="submit"

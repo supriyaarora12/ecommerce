@@ -14,6 +14,7 @@ import { auth, db, googleProvider } from '../lib/firebase';
 import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import { Timestamp , FieldValue } from "firebase/firestore";
 import { useRouter } from 'next/navigation';
+import { useToast } from '../../app/context/ToastContext';
 
 export type Address = { label: string; line1: string; city: string; state?: string; zip?: string; country?: string };
 
@@ -60,6 +61,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { showSuccess, showError } = useToast();
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (u) => {
@@ -106,8 +108,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signOut = async () => {
-    await fbSignOut(auth);
-    router.push('/');
+    try {
+      await fbSignOut(auth);
+      showSuccess('Successfully signed out');
+      router.push('/');
+    } catch (error) {
+      showError('Failed to sign out');
+    }
   };
 
   const saveUserDoc = async (partial: Partial<UserDoc>) => {

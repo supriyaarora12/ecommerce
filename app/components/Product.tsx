@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useCart } from '../context/CartContext'; 
 import { useRouter } from 'next/navigation'; // ✅ For navigation
+import { useToast } from '../context/ToastContext';
 
 interface ProductProps {
   id: number;
@@ -31,6 +32,7 @@ export default function Product({
 }: ProductProps) {
   const { addToCart } = useCart();
   const router = useRouter();
+  const { showSuccess } = useToast();
 
   const renderStars = (rating: number) => {
     const stars = [];
@@ -40,9 +42,9 @@ export default function Product({
     for (let i = 0; i < fullStars; i++) {
       stars.push(
         <Image
-          key={i}
+          key={`full-${i}`}
           src="/ui/product/fullstar.svg"
-          alt="star"
+          alt="Full star"
           width={16}
           height={16}
         />
@@ -54,20 +56,20 @@ export default function Product({
         <Image
           key="half"
           src="/ui/product/star-half-filled.svg"
-          alt="half star"
+          alt="Half star"
           width={16}
           height={16}
         />
       );
     }
 
-    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    const emptyStars = 5 - Math.ceil(rating);
     for (let i = 0; i < emptyStars; i++) {
       stars.push(
         <Image
           key={`empty-${i}`}
           src="/ui/product/emptystar.svg"
-          alt="empty star"
+          alt="Empty star"
           width={16}
           height={16}
         />
@@ -78,22 +80,45 @@ export default function Product({
   };
 
   return (
-    <div className="group relative">
+    <div className="min-w-[260px] bg-white rounded-lg shadow-sm border border-gray-100 p-4">
       {/* Product Image */}
-      <div className="relative w-full h-64 bg-gray-50 rounded-lg overflow-hidden">
-        <Image
-          src={image}
-          alt={name}
-          fill
-          className="object-contain p-4 group-hover:scale-105 transition-transform duration-300"
-        />
+      <div className="relative mb-4 group">
+        <div className="bg-gray-100 rounded-lg p-4 h-48 flex items-center justify-center">
+          <Image
+            src={image}
+            alt={name}
+            width={200}
+            height={200}
+            className="object-contain"
+          />
+        </div>
         
-        {/* Discount Badge */}
+        {/* Discount Tag */}
         {discount > 0 && (
-          <div className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
+          <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
             -{discount}%
           </div>
         )}
+        
+        {/* Action Icons */}
+        <div className="absolute top-2 right-2 flex flex-col gap-2">
+          <button className="w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
+            <Image
+              src="/ui/product/Heart.svg"
+              alt="Add to wishlist"
+              width={24}
+              height={24}
+            />
+          </button>
+          <button className="w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
+            <Image
+              src="/ui/product/Eye.svg"
+              alt="Quick view"
+              width={24}
+              height={24}
+            />
+          </button>
+        </div>
         
         {/* Add to Cart Button */}
         {showAddToCart && (

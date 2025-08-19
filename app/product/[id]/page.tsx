@@ -6,6 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { FaStar, FaTruck, FaUndoAlt, FaHeart, FaEye } from 'react-icons/fa';
+import { useToast } from '../../context/ToastContext';
 
 const products = [
   {
@@ -74,6 +75,7 @@ const products = [
 export default function ProductDetailPage() {
   const { id } = useParams();
   const { addToCart } = useCart();
+  const { showSuccess } = useToast();
   const product = products.find((p) => p.id === id);
 
   const [mainImage, setMainImage] = useState(product?.images[0]);
@@ -198,7 +200,20 @@ export default function ProductDetailPage() {
               </button>
             </div>
             <button
-              onClick={() => addToCart(product, quantity)}
+              onClick={() => {
+                addToCart({
+                  id: parseInt(product.id),
+                  name: product.name,
+                  price: product.price,
+                  quantity: quantity,
+                  image: product.images[0],
+                  originalPrice: product.oldPrice,
+                  discountedPrice: product.price,
+                  discount: Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100),
+                  rating: product.rating,
+                  reviews: product.reviews,
+                });
+              }}
               className="bg-red-500 text-white px-6 py-3 rounded-md hover:bg-red-600"
             >
               Add to Cart

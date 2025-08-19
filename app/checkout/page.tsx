@@ -8,11 +8,13 @@ import { useState, useEffect } from "react";
 import { createOrder } from "../../src/services/orders";
 import { addOrderToUser, getUser, saveBillingDetails } from "../../src/services/users";
 import { useRouter } from "next/navigation";
+import { useToast } from "../context/ToastContext";
 
 export default function CheckoutPage() {
   const { cart, clearCart } = useCart();
   const { user } = useAuth();
   const router = useRouter();
+  const { showError, showSuccess, showLoading, dismissToast } = useToast();
   const [paymentMethod, setPaymentMethod] = useState("bank");
   const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
@@ -103,16 +105,17 @@ export default function CheckoutPage() {
     const missingFields = requiredFields.filter(field => !formData[field as keyof typeof formData]);
     
     if (missingFields.length > 0) {
-      alert(`Please fill in all required fields: ${missingFields.join(', ')}`);
+      showError(`Please fill in all required fields: ${missingFields.join(', ')}`);
       return;
     }
 
     if (cart.length === 0) {
-      alert('Your cart is empty');
+      showError('Your cart is empty');
       return;
     }
 
     setIsProcessing(true);
+    const loadingToast = showLoading('Processing your order...');
     
     try {
       // Create individual orders for each cart item
@@ -158,13 +161,15 @@ export default function CheckoutPage() {
       // Clear cart
       clearCart();
       
-      // Show success message and redirect
-      alert(`${cart.length} orders placed successfully! Redirecting to your orders...`);
+      // Dismiss loading toast and show success message
+      dismissToast(loadingToast);
+      showSuccess(`${cart.length} orders placed successfully! Redirecting to your orders...`);
       router.push('/orders');
       
     } catch (error) {
       console.error('Error placing orders:', error);
-      alert('Failed to place orders. Please try again.');
+      dismissToast(loadingToast);
+      showError('Failed to place orders. Please try again.');
     } finally {
       setIsProcessing(false);
     }

@@ -10,6 +10,8 @@ import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishListContext";
 import { AuthProvider } from"../src/context/AuthContext"; // ✅ import AuthProvider
 import { AdminProvider } from "../src/context/AdminContext"; // ✅ import AdminProvider
+import { ToastProvider } from "./context/ToastContext";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,19 +38,22 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* ✅ AuthProvider should wrap everything so that auth context is available globally */}
-        <AuthProvider>
-          <AdminProvider>
-            <WishlistProvider>
-              <CartProvider>
-                <PromotionalBanner />
-                <NavigationBar />
-                <div className="min-h-screen">{children}</div>
-                <Footer />
-              </CartProvider>
-            </WishlistProvider>
-          </AdminProvider>
-        </AuthProvider>
+        {/* ✅ ToastProvider should wrap everything so that toast context is available globally */}
+        <ToastProvider>
+          <AuthProvider>
+            <AdminProvider>
+              <WishlistProvider>
+                <CartProvider>
+                  <PromotionalBanner />
+                  <NavigationBar />
+                  <div className="min-h-screen">{children}</div>
+                  <Footer />
+                  <Toaster />
+                </CartProvider>
+              </WishlistProvider>
+            </AdminProvider>
+          </AuthProvider>
+        </ToastProvider>
       </body>
     </html>
   );

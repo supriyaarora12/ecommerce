@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react";
 import RouteGuard from "../../src/components/auth/RouteGuard";
 import { useAuth } from "../../src/context/AuthContext";
+import { useToast } from "../context/ToastContext";
 
 export default function ManageAccount() {
   const { user, saveUserDoc } = useAuth();
+  const { showSuccess, showError } = useToast();
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -16,7 +18,6 @@ export default function ManageAccount() {
     confirmPassword: "",
   });
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -40,7 +41,6 @@ export default function ManageAccount() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setMessage("");
 
     try {
       const displayName = `${form.firstName} ${form.lastName}`.trim();
@@ -48,9 +48,9 @@ export default function ManageAccount() {
         displayName,
         // Add other fields as needed
       });
-      setMessage("Profile updated successfully!");
+      showSuccess("Profile updated successfully!");
     } catch (error) {
-      setMessage("Failed to update profile. Please try again.");
+      showError("Failed to update profile. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -103,13 +103,7 @@ export default function ManageAccount() {
             <div className="bg-white shadow-md rounded-md p-8">
               <h2 className="text-lg font-semibold text-red-500 mb-6">Edit Your Profile</h2>
 
-              {message && (
-                <div
-                  className={`mb-4 p-3 rounded ${message.includes("success") ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
-                >
-                  {message}
-                </div>
-              )}
+
 
               {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-6">

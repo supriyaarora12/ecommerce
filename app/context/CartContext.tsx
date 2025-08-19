@@ -1,6 +1,7 @@
 'use client';
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect, useRef } from 'react';
 import { useAuth, CartItem as UserCartItem } from '../../src/context/AuthContext';
+import { useToast } from './ToastContext';
 
 interface CartItem {
   id: number;
@@ -30,6 +31,8 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCartState] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
   const { user, updateUserCart, getUserCart } = useAuth();
+  const { showSuccess, showError } = useToast();
+  const lastToastRef = useRef<string>('');
 
   // Load cart from user document when user logs in
   useEffect(() => {
@@ -99,37 +102,79 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setCartState((prev) => {
       const existing = prev.find((p) => p.id === item.id);
       let newCart;
+      let toastMessage = '';
       
       if (existing) {
         newCart = prev.map((p) =>
           p.id === item.id ? { ...p, quantity: p.quantity + item.quantity } : p
         );
+        toastMessage = `${item.name} quantity updated in cart!`;
       } else {
         newCart = [...prev, item];
+        toastMessage = `${item.name} added to cart successfully!`;
       }
 
       // Save to user document
       saveCartToUser(newCart);
+      
+      // Show toast only if it's different from the last one
+      if (lastToastRef.current !== toastMessage) {
+        showSuccess(toastMessage);
+        lastToastRef.current = toastMessage;
+        // Clear the reference after a short delay to allow legitimate duplicates
+        setTimeout(() => {
+          lastToastRef.current = '';
+        }, 1000);
+      }
+      
       return newCart;
     });
   };
 
   const updateQuantity = (id: number, quantity: number) => {
     setCartState((prev) => {
+      const item = prev.find((p) => p.id === id);
       const newCart = prev.map((p) => (p.id === id ? { ...p, quantity } : p));
       
       // Save to user document
       saveCartToUser(newCart);
+      
+      if (item) {
+        const toastMessage = `${item.name} quantity updated to ${quantity}`;
+        if (lastToastRef.current !== toastMessage) {
+          showSuccess(toastMessage);
+          lastToastRef.current = toastMessage;
+          // Clear the reference after a short delay to allow legitimate duplicates
+          setTimeout(() => {
+            lastToastRef.current = '';
+          }, 1000);
+        }
+      }
+      
       return newCart;
     });
   };
 
   const removeFromCart = (id: number) => {
     setCartState((prev) => {
+      const item = prev.find((p) => p.id === id);
       const newCart = prev.filter((p) => p.id !== id);
       
       // Save to user document
       saveCartToUser(newCart);
+      
+      if (item) {
+        const toastMessage = `${item.name} removed from cart`;
+        if (lastToastRef.current !== toastMessage) {
+          showSuccess(toastMessage);
+          lastToastRef.current = toastMessage;
+          // Clear the reference after a short delay to allow legitimate duplicates
+          setTimeout(() => {
+            lastToastRef.current = '';
+          }, 1000);
+        }
+      }
+      
       return newCart;
     });
   };
@@ -138,6 +183,15 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setCartState([]);
     if (user) {
       saveCartToUser([]);
+    }
+    const toastMessage = 'Cart cleared successfully';
+    if (lastToastRef.current !== toastMessage) {
+      showSuccess(toastMessage);
+      lastToastRef.current = toastMessage;
+      // Clear the reference after a short delay to allow legitimate duplicates
+      setTimeout(() => {
+        lastToastRef.current = '';
+      }, 1000);
     }
   };
 

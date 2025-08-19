@@ -19,7 +19,7 @@ const NewArrivals = () => {
         <div className="gridItemHome playstation">
           <div className="relative bg-gray-900 rounded-lg overflow-hidden h-full">
             <Image
-              src="/ui/newarrival/playstation.svg"
+              src="/ui/newarrival/play.png"
               alt="PlayStation 5"
               fill
               className="object-cover"
@@ -43,7 +43,7 @@ const NewArrivals = () => {
         <div className="gridItemHome womens">
           <div className="relative bg-gray-900 rounded-lg overflow-hidden h-full">
             <Image
-              src="/ui/newarrival/lady.svg"
+              src="/ui/newarrival/lady.pg"
               alt="Women's Collections"
               fill
               className="object-cover"
@@ -67,7 +67,7 @@ const NewArrivals = () => {
         <div className="gridItemHome speakers">
           <div className="relative bg-gray-900 rounded-lg overflow-hidden h-full">
             <Image
-              src="/ui/newarrival/alexa.svg"
+              src="/ui/newarrival/alexa.png"
               alt="Amazon Wireless Speakers"
               fill
               className="object-cover"
@@ -91,7 +91,7 @@ const NewArrivals = () => {
         <div className="gridItemHome perfume">
           <div className="relative bg-gray-900 rounded-lg overflow-hidden h-full">
             <Image
-              src="/ui/newarrival/perfume.svg"
+              src="/ui/newarrival/perfume.png"
               alt="GUCCI INTENSE OUD EDP"
               fill
               className="object-cover"
