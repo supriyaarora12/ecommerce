@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { getUserOrders } from "../../src/services/orders";
 import { Order } from "../../src/services/orders";
 import Image from "next/image";
+import Link from 'next/link';
 
 export default function OrdersPage() {
   const { user } = useAuth();
@@ -86,12 +87,12 @@ export default function OrdersPage() {
             <div className="text-gray-400 text-6xl mb-4">📦</div>
             <h2 className="text-2xl font-semibold text-gray-600 mb-2">No orders yet</h2>
             <p className="text-gray-500 mb-6">Start shopping to see your orders here</p>
-            <a 
+            <Link
               href="/" 
               className="bg-red-500 text-white px-6 py-3 rounded hover:bg-red-600 transition-colors"
             >
               Start Shopping
-            </a>
+            </Link>
           </div>
         ) : (
           <div className="space-y-6">
