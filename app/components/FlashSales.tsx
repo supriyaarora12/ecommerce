@@ -63,6 +63,7 @@ const products = [
     reviews: 65,
     image: "/ui/home/headset.svg"
   }
+  
 ];
 
 export default function FlashSales() {
