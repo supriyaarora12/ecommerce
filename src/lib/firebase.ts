@@ -27,6 +27,7 @@ console.log('Firebase Config Check:', {
   measurementId: firebaseConfig.measurementId ? '✅ Present' : '❌ Missing'
 });
 
+
 console.log('Full Firebase Config:', firebaseConfig);
 
 // Check if all required environment variables are present

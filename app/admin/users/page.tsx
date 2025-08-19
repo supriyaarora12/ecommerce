@@ -13,7 +13,7 @@ export default function AdminUsersPage() {
         <h2 className="text-xl font-semibold text-gray-900 mb-2">User Management</h2>
         <p className="text-gray-600 mb-6">This feature is coming soon!</p>
         <p className="text-sm text-gray-500">
-          You'll be able to view and manage customer accounts here.
+          You will be able to view and manage customer accounts here.
         </p>
       </div>
     </div>

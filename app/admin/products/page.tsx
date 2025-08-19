@@ -13,7 +13,7 @@ export default function AdminProductsPage() {
         <h2 className="text-xl font-semibold text-gray-900 mb-2">Product Management</h2>
         <p className="text-gray-600 mb-6">This feature is coming soon!</p>
         <p className="text-sm text-gray-500">
-          You'll be able to add, edit, and manage your product catalog here.
+          You will be able to add, edit, and manage your product catalog here.
         </p>
       </div>
     </div>
