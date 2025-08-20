@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useAuth } from './AuthContext';
 import { getAllOrders, updateOrderStatus, Order } from '../services/orders';
-import { QueryDocumentSnapshot } from 'firebase/firestore';
+import { QueryDocumentSnapshot , DocumentData} from 'firebase/firestore';
 
 interface AdminContextType {
   isAdmin: boolean;
@@ -35,7 +35,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [loadingOrders, setLoadingOrders] = useState(false);
-  const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot | null>(null);
+  const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot<DocumentData> | null>(null);
 
   // Check if user is admin
   useEffect(() => {
