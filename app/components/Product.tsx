@@ -83,13 +83,13 @@ export default function Product({
     <div className="min-w-[260px] bg-white rounded-lg shadow-sm border border-gray-100 p-4">
       {/* Product Image */}
       <div className="relative mb-4 group">
-        <div className="bg-gray-100 rounded-lg p-4 h-48 flex items-center justify-center">
+        <div className="bg-gray-100 rounded-lg p-4 h-48 flex items-center justify-center overflow-hidden">
           <Image
             src={image}
             alt={name}
             width={200}
             height={200}
-            className="object-contain"
+            className="object-cover w-full h-full"
           />
         </div>
         
