@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { FaStar, FaTruck, FaUndoAlt, FaHeart, FaEye } from 'react-icons/fa';
 import { useToast } from '../../context/ToastContext';
 
+
 const products = [
   {
     id: '1',
