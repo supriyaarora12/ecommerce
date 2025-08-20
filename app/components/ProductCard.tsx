@@ -7,6 +7,7 @@ import { useWishlist } from "../context/WishListContext";
 import { HeartIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useToast } from "../context/ToastContext";
 
+
 interface ProductCardProps {
   id: number;
   name: string;

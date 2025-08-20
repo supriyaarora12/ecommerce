@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from "next/link";
 
 interface MenuItem {
   id: string;
@@ -14,55 +15,55 @@ const menuItems: MenuItem[] = [
     id: 'womens-fashion',
     label: "Woman's Fashion",
     hasSubmenu: true,
-    submenu: ['Dresses', 'Tops', 'Bottoms', 'Outerwear', 'Accessories', 'Shoes', 'Bags']
+    submenu: ['Dresses', 'Tops', 'Bottoms', 'Accessories', 'Bags']
   },
   {
     id: 'mens-fashion',
     label: "Men's Fashion",
     hasSubmenu: true,
-    submenu: ['Shirts', 'Pants', 'Suits', 'Outerwear', 'Accessories', 'Shoes', 'Watches']
+    submenu: ['Shirts', 'Pants', 'Suits',  'Accessories', 'Watches']
   },
   {
     id: 'electronics',
     label: 'Electronics',
     hasSubmenu: true,
-    submenu: ['Smartphones', 'Laptops', 'Tablets', 'Audio', 'Cameras', 'Gaming', 'Smart Home']
+    submenu: ['Smartphones', 'Laptops', 'Tablets',  'Cameras', 'Gaming']
   },
   {
     id: 'home-lifestyle',
     label: 'Home & Lifestyle',
     hasSubmenu: true,
-    submenu: ['Furniture', 'Decor', 'Kitchen', 'Bedding', 'Bath', 'Lighting', 'Storage']
+    submenu: ['Furniture', 'Decor', 'Kitchen', 'Bath', 'Lighting']
   },
   {
     id: 'medicine',
     label: 'Medicine',
     hasSubmenu: true,
-    submenu: ['Prescription', 'Over-the-counter', 'Vitamins', 'First Aid', 'Personal Care', 'Medical Devices']
+    submenu: ['Prescription',  'Vitamins', 'First Aid', 'Personal Care', 'Medical Devices']
   },
   {
     id: 'sports-outdoor',
     label: 'Sports & Outdoor',
     hasSubmenu: true,
-    submenu: ['Fitness', 'Team Sports', 'Outdoor Gear', 'Camping', 'Hiking', 'Water Sports']
+    submenu: ['Fitness',  'Outdoor Gear', 'Camping', 'Hiking', 'Water Sports']
   },
   {
     id: 'babies-toys',
     label: "Baby's & Toys",
     hasSubmenu: true,
-    submenu: ['Clothing', 'Diapers', 'Feeding', 'Toys', 'Books', 'Safety', 'Strollers']
+    submenu: ['Clothing', 'Diapers', 'Feeding', 'Toys', 'Books']
   },
   {
     id: 'groceries-pets',
     label: 'Groceries & Pets',
     hasSubmenu: true,
-    submenu: ['Fresh Food', 'Pantry', 'Beverages', 'Pet Food', 'Pet Supplies', 'Pet Toys']
+    submenu: [ 'Pantry', 'Beverages', 'Pet Food',  'Pet Toys']
   },
   {
     id: 'health-beauty',
     label: 'Health & Beauty',
     hasSubmenu: true,
-    submenu: ['Skincare', 'Makeup', 'Hair Care', 'Fragrances', 'Tools', 'Bath & Body']
+    submenu: ['Skincare', 'Makeup', 'Fragrances', 'hair-care', 'Bath & Body']
   }
 ];
 
@@ -122,12 +123,13 @@ export default function LeftMenu() {
                         <ul className="space-y-2">
                           {item.submenu?.map((subItem, index) => (
                             <li key={index}>
-                              <a
-                                href="#"
-                                className="block py-2 px-3 text-sm text-gray-700 hover:text-black hover:bg-gray-50 rounded-md transition-colors duration-200"
-                              >
-                                {subItem}
-                              </a>
+                              <Link
+                           href={`/category/${subItem.toLowerCase().replace(/\s+/g, "-")}`}
+                          className="block py-2 px-3 text-sm text-gray-700 hover:text-black hover:bg-gray-50 rounded-md transition-colors duration-200"
+                        >
+                     {subItem}
+                        </Link>
+
                             </li>
                           ))}
                         </ul>
