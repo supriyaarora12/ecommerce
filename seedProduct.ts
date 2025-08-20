@@ -1,4 +1,4 @@
-import { db } from "../ecommerce/src/lib/firebase";  
+import { db } from "./src/lib/firebase";  
 import { collection, addDoc } from "firebase/firestore";
 
 const products = [
