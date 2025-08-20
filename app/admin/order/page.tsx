@@ -55,16 +55,26 @@ export default function AdminOrderPage() {
   };
 
   const handleStatusUpdate = async (orderId: string, newStatus: string) => {
-    setUpdatingStatus(orderId);
-    try {
-      await updateOrder(orderId, newStatus as any);
-    } catch (error) {
-      console.error('Error updating order status:', error);
-    } finally {
-      setUpdatingStatus(null);
+  setUpdatingStatus(orderId);
+  try {
+    // Validate newStatus against allowed values
+    if (
+      newStatus === "pending" ||
+      newStatus === "paid" ||
+      newStatus === "shipped" ||
+      newStatus === "delivered" ||
+      newStatus === "cancelled"
+    ) {
+      await updateOrder(orderId, newStatus);
+    } else {
+      console.warn("Invalid status:", newStatus);
     }
-  };
-
+  } catch (error) {
+    console.error("Error updating order status:", error);
+  } finally {
+    setUpdatingStatus(null);
+  }
+};
   const totalPages = Math.ceil(totalOrders / pageSize);
 
   if (loadingOrders && orders.length === 0) {

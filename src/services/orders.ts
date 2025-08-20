@@ -1,5 +1,5 @@
 import { db } from "../lib/firebase";
-import { collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, limit, startAfter, QueryDocumentSnapshot } from "firebase/firestore";
+import { collection, doc, setDoc, getDoc, getDocs, query, where, orderBy, limit, startAfter, QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
 
 export interface OrderItem {
   id: number;
@@ -55,10 +55,10 @@ export async function getUserOrders(uid: string): Promise<Order[]> {
 // Get all orders for admin (with pagination and filtering)
 export async function getAllOrders(
   pageSize: number = 10,
-  lastDoc?: QueryDocumentSnapshot,
+  lastDoc: QueryDocumentSnapshot<DocumentData> | null = null,
   statusFilter?: string,
   searchQuery?: string
-): Promise<{ orders: Order[]; lastDoc: QueryDocumentSnapshot | null; total: number }> {
+): Promise<{ orders: Order[]; lastDoc: QueryDocumentSnapshot<DocumentData> | null; total: number }> {
   let q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
   
   // Apply status filter if provided
