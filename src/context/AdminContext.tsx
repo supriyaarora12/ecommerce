@@ -50,26 +50,25 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setLoading(false);
   }, [user]);
 
-  const loadOrders = async (page: number = 1, status: string = statusFilter, search: string = searchQuery) => {
+  const loadOrders = async (page: number = 1, status: string = statusFilter) => {
     if (!isAdmin) return;
 
     try {
       setLoadingOrders(true);
       
       // Reset pagination if filters change
-      if (status !== statusFilter || search !== searchQuery) {
+      if (status !== statusFilter) {
         setLastDoc(null);
         setCurrentPage(1);
       }
 
-      const result = await getAllOrders(pageSize, lastDoc, status, search);
+      const result = await getAllOrders(pageSize, lastDoc, status);
       
       setOrders(result.orders);
       setTotalOrders(result.total);
       setLastDoc(result.lastDoc);
       setCurrentPage(page);
       setStatusFilter(status);
-      setSearchQuery(search);
     } catch (error) {
       console.error('Error loading orders:', error);
     } finally {
@@ -83,7 +82,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     try {
       await updateOrderStatus(orderId, status);
       // Refresh orders after update
-      await loadOrders(currentPage, statusFilter, searchQuery);
+      await loadOrders(currentPage, statusFilter);
     } catch (error) {
       console.error('Error updating order:', error);
       throw error;
@@ -92,19 +91,19 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const handleSetStatusFilter = (status: string) => {
     setStatusFilter(status);
-    loadOrders(1, status, searchQuery);
+    loadOrders(1, status);
   };
 
   const handleSetSearchQuery = (query: string) => {
     setSearchQuery(query);
-    loadOrders(1, statusFilter, query);
+    loadOrders(1, statusFilter);
   };
 
   const handleSetPageSize = (size: number) => {
     setPageSize(size);
     setLastDoc(null);
     setCurrentPage(1);
-    loadOrders(1, statusFilter, searchQuery);
+    loadOrders(1, statusFilter);
   };
 
   return (

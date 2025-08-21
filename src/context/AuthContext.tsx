@@ -19,11 +19,23 @@ import { useToast } from '../../app/context/ToastContext';
 export type Address = { label: string; line1: string; city: string; state?: string; zip?: string; country?: string };
 
 export type CartItem = {
-  productId: string;
-  quantity: number;
+  id: number;
   name: string;
-  price: number;
   image: string;
+  price: number;
+  originalPrice: number;
+  discountedPrice: number;
+  discount: number;
+  rating: number;
+  reviews: number;
+  quantity: number;
+};
+
+export type FavoriteItem = {
+  id: number;
+  name: string;
+  image: string;
+  price: number;
   originalPrice: number;
   discountedPrice: number;
   discount: number;
@@ -39,6 +51,7 @@ export type UserDoc = {
   addresses?: Address[];
   photoURL?: string | null;
   cart?: CartItem[];
+  favorites?: FavoriteItem[];
   createdAt?:  Timestamp | FieldValue;
   updatedAt?:  Timestamp | FieldValue;
 };
@@ -53,6 +66,8 @@ type AuthContextType = {
   saveUserDoc: (partial: Partial<UserDoc>) => Promise<void>;
   updateUserCart: (cartItems: CartItem[]) => Promise<void>;
   getUserCart: () => Promise<CartItem[]>;
+  updateUserFavorites: (favorites: FavoriteItem[]) => Promise<void>;
+  getUserFavorites: () => Promise<FavoriteItem[]>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -112,7 +127,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await fbSignOut(auth);
       showSuccess('Successfully signed out');
       router.push('/');
-    } catch (error) {
+    } catch {
       showError('Failed to sign out');
     }
   };
@@ -147,6 +162,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return [];
   };
 
+  const updateUserFavorites = async (favorites: FavoriteItem[]) => {
+    if (!auth.currentUser) throw new Error('Not authenticated');
+    const ref = doc(db, 'users', auth.currentUser.uid);
+    await updateDoc(ref, {
+      favorites: favorites,
+      updatedAt: serverTimestamp(),
+    });
+  };
+
+  const getUserFavorites = async (): Promise<FavoriteItem[]> => {
+    if (!auth.currentUser) return [];
+    const ref = doc(db, 'users', auth.currentUser.uid);
+    const snap = await getDoc(ref);
+    if (snap.exists()) {
+      const userData = snap.data() as UserDoc;
+      return userData.favorites || [];
+    }
+    return [];
+  };
+
   return (
     <AuthContext.Provider value={{ 
       user, 
@@ -157,7 +192,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       signOut, 
       saveUserDoc,
       updateUserCart,
-      getUserCart
+      getUserCart,
+      updateUserFavorites,
+      getUserFavorites
     }}>
       {children}
     </AuthContext.Provider>

@@ -10,6 +10,7 @@ const products = [
     category: "dresses",
     imageUrl: "https://picsum.photos/id/1011/400/500",
     stock: 15,
+    description: "Beautiful floral print summer dress perfect for warm weather. Made from lightweight, breathable fabric with a comfortable fit.",
   },
   {
     name: "Evening Gown",
@@ -291,6 +292,7 @@ const products = [
     category: "smartphones",
     imageUrl: "https://picsum.photos/id/1048/400/500",
     stock: 12,
+    description: "Latest iPhone with advanced camera system, A17 Pro chip, and titanium design. Features 48MP main camera and USB-C connectivity.",
   },
   {
     name: "Samsung Galaxy S24",
@@ -321,6 +323,7 @@ const products = [
     category: "laptops",
     imageUrl: "https://picsum.photos/id/1052/400/500",
     stock: 8,
+    description: "Powerful laptop with Apple M3 chip, perfect for professionals. Features stunning Retina display and all-day battery life.",
   },
   {
     name: "Dell XPS 13",

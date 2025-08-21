@@ -49,7 +49,7 @@ export default function ManageAccount() {
         // Add other fields as needed
       });
       showSuccess("Profile updated successfully!");
-    } catch (error) {
+    } catch {
       showError("Failed to update profile. Please try again.");
     } finally {
       setLoading(false);

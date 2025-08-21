@@ -2,8 +2,9 @@
 
 import Image from 'next/image';
 import { useCart } from '../context/CartContext'; 
-import { useRouter } from 'next/navigation'; // ✅ For navigation
-import { useToast } from '../context/ToastContext';
+
+import WishListButton from './WishListButton';
+import { FavoriteItem } from '../../src/context/AuthContext';
 
 interface ProductProps {
   id: number;
@@ -31,8 +32,19 @@ export default function Product({
   showAddToCart = true
 }: ProductProps) {
   const { addToCart } = useCart();
-  const router = useRouter();
-  const { showSuccess } = useToast();
+
+  // Create FavoriteItem object for WishListButton
+  const favoriteItem: FavoriteItem = {
+    id,
+    name,
+    image,
+    price: discountedPrice,
+    originalPrice,
+    discountedPrice,
+    discount,
+    rating,
+    reviews
+  };
 
   const renderStars = (rating: number) => {
     const stars = [];
@@ -102,14 +114,7 @@ export default function Product({
         
         {/* Action Icons */}
         <div className="absolute top-2 right-2 flex flex-col gap-2">
-          <button className="w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
-            <Image
-              src="/ui/product/Heart.svg"
-              alt="Add to wishlist"
-              width={24}
-              height={24}
-            />
-          </button>
+          <WishListButton item={favoriteItem} />
           <button className="w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
             <Image
               src="/ui/product/Eye.svg"

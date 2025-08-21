@@ -1,6 +1,7 @@
 'use client';
 
 import Product from './Product';
+import Link from 'next/link';
 
 const newReleaseProducts = [
     {
@@ -106,9 +107,11 @@ export default function NewReleases() {
                     <h2 className="text-3xl font-bold text-gray-900">New & Featured</h2>
                 </div>
                 <div className="flex items-center gap-4">
-                    <button className="bg-red-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-red-600 transition-colors">
-                        View All Products
-                    </button>
+                    <Link href="/products">
+                        <button className="bg-red-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-red-600 transition-colors">
+                            View All Products
+                        </button>
+                    </Link>
                 </div>
             </div>
 
