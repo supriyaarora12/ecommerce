@@ -4,9 +4,10 @@ import Image from "next/image";
 import { useState } from "react";
 import { useCart } from "../context/CartContext";
 import { useWishlist } from "../context/WishListContext"; 
-import { HeartIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { useToast } from "../context/ToastContext";
+import { TrashIcon } from "@heroicons/react/24/outline";
 
+import WishListButton from "./WishListButton";
+import { FavoriteItem } from "../../src/context/AuthContext";
 
 interface ProductCardProps {
   id: number;
@@ -26,11 +27,21 @@ export default function ProductCard({
   isWishlist = false,
 }: ProductCardProps) {
   const { addToCart } = useCart();
-  const { wishlist, toggleWishlist, removeFromWishlist } = useWishlist();
+  const { removeFromWishlist } = useWishlist();
   const [loading, setLoading] = useState(false);
-  const { showSuccess } = useToast();
 
-  const inWishlist = wishlist.some((item) => item.id === id);
+  // Create FavoriteItem object for WishListButton
+  const favoriteItem: FavoriteItem = {
+    id,
+    name,
+    image,
+    price,
+    originalPrice: oldPrice ?? price,
+    discountedPrice: price,
+    discount: oldPrice ? Math.round(((oldPrice - price) / oldPrice) * 100) : 0,
+    rating: 0, // placeholder until you have real data
+    reviews: 0
+  };
 
   const handleAddToCart = () => {
     setLoading(true);
@@ -59,22 +70,18 @@ export default function ProductCard({
           className="object-contain rounded-t-lg"
         />
         {/* Wishlist/Trash button */}
-        <button
-          onClick={() =>
-            isWishlist ? removeFromWishlist(id) : toggleWishlist({ id, name, image, price })
-          }
-          className="absolute top-3 right-3 bg-white rounded-full p-2 shadow hover:bg-gray-100 transition"
-        >
-          {isWishlist ? (
+        {isWishlist ? (
+          <button
+            onClick={() => removeFromWishlist(id)}
+            className="absolute top-3 right-3 bg-white rounded-full p-2 shadow hover:bg-gray-100 transition"
+          >
             <TrashIcon className="w-5 h-5 text-gray-600" />
-          ) : (
-<HeartIcon
-  className={`w-5 h-5 ${
-    inWishlist ? "fill-red-500 text-red-500" : "text-gray-600"
-  }`}
-/>
-          )}
-        </button>
+          </button>
+        ) : (
+          <div className="absolute top-3 right-3">
+            <WishListButton item={favoriteItem} />
+          </div>
+        )}
       </div>
 
       {/* Product info */}
@@ -98,4 +105,4 @@ export default function ProductCard({
       </div>
     </div>
   );
-   }  
+}  

@@ -2,20 +2,22 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface Category {
   id: number;
   name: string;
   icon: string;
+  slug: string;
 }
 
 const categories: Category[] = [
-  { id: 1, name: 'Phones', icon: '/ui/homepage/Category-CellPhone.svg' },
-  { id: 2, name: 'Computers', icon: '/ui/homepage/Category-Computer.svg' },
-  { id: 3, name: 'SmartWatch', icon: '/ui/homepage/Category-SmartWatch.svg' },
-  { id: 4, name: 'Camera', icon:'/ui/homepage/Category-Camera.svg' },
-  { id: 5, name: 'HeadPhones', icon: '/ui/homepage/Category-Headphone.svg' },
-  { id: 6, name: 'Gaming', icon: '/ui/homepage/Category-Gamepad.svg' }
+  { id: 1, name: 'Phones', icon: '/ui/homepage/Category-CellPhone.svg', slug: 'phones' },
+  { id: 2, name: 'Computers', icon: '/ui/homepage/Category-Computer.svg', slug: 'computers' },
+  { id: 3, name: 'SmartWatch', icon: '/ui/homepage/Category-SmartWatch.svg', slug: 'smartwatch' },
+  { id: 4, name: 'Camera', icon:'/ui/homepage/Category-Camera.svg', slug: 'camera' },
+  { id: 5, name: 'HeadPhones', icon: '/ui/homepage/Category-Headphone.svg', slug: 'headphones' },
+  { id: 6, name: 'Gaming', icon: '/ui/homepage/Category-Gamepad.svg', slug: 'gaming' }
 ];
 
 export default function BrowseByCategory() {
@@ -51,8 +53,9 @@ export default function BrowseByCategory() {
       {/* Category Cards - Grid on mobile, row on desktop */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
         {categories.map((category) => (
-          <div
+          <Link
             key={category.id}
+            href={`/category/${category.slug}`}
             className="flex flex-col items-center justify-center p-3 sm:p-4 lg:p-6 border border-gray-200 rounded-lg cursor-pointer transition-all duration-300 hover:bg-red-500 hover:border-red-500 group"
             onMouseEnter={() => setHoveredCategory(category.id)}
             onMouseLeave={() => setHoveredCategory(null)}
@@ -73,7 +76,7 @@ export default function BrowseByCategory() {
             }`}>
               {category.name}
             </span>
-          </div>
+          </Link>
         ))}
       </div>
     </section>

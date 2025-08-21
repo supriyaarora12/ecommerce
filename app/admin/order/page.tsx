@@ -25,7 +25,7 @@ export default function AdminOrderPage() {
 
   useEffect(() => {
     loadOrders();
-  }, []);
+  }, [loadOrders]);
 
   const getStatusColor = (status: string) => {
     switch (status) {

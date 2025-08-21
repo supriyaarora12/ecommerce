@@ -1,6 +1,7 @@
 'use client';
 
 import ProductCarousel from './ProductCarousel';
+import Link from 'next/link';
 
 const products = [
   {
@@ -80,9 +81,11 @@ export default function FlashSales() {
       
       {/* View All Products Button */}
       <div className="flex justify-center mt-8">
-        <button className="bg-red-500 text-white px-8 py-3 rounded-md font-medium hover:bg-red-600 transition-colors">
-          View All Products
-        </button>
+        <Link href="/products">
+          <button className="bg-red-500 text-white px-8 py-3 rounded-md font-medium hover:bg-red-600 transition-colors">
+            View All Products
+          </button>
+        </Link>
       </div>
     </>
   );

@@ -1,6 +1,4 @@
 "use client";
-import Image from 'next/image';
-import Link from 'next/link';
 export default function ContactPage() {
   return (
     <div className="max-w-[1330px] mx-auto px-8 py-10">

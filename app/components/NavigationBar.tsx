@@ -6,16 +6,33 @@ import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishListContext'; 
 import { useAuth } from '../../src/context/AuthContext';
 import AccountDropdown from "../components/AccountDropdown";
+import SearchResults from "./SearchResults";
 
 export default function NavigationBar() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showSearchResults, setShowSearchResults] = useState(false);
   const { cart } = useCart();
   const { wishlist } = useWishlist(); 
   const { user, loading } = useAuth();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setShowSearchResults(true);
+  };
+
+  const handleSearchFocus = () => {
+    if (searchQuery.trim()) {
+      setShowSearchResults(true);
+    }
+  };
+
+  const closeSearchResults = () => {
+    setShowSearchResults(false);
   };
 
   return (
@@ -61,7 +78,8 @@ export default function NavigationBar() {
               type="text"
               placeholder="What are you looking for?"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={handleSearchChange}
+              onFocus={handleSearchFocus}
               className="w-64 px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent"
             />
             <button className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -79,6 +97,11 @@ export default function NavigationBar() {
                 />
               </svg>
             </button>
+            <SearchResults
+              searchQuery={searchQuery}
+              isVisible={showSearchResults}
+              onClose={closeSearchResults}
+            />
           </div>
 
           {/* Wishlist (Heart) */}
@@ -175,7 +198,8 @@ export default function NavigationBar() {
                 type="text"
                 placeholder="What are you looking for?"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleSearchChange}
+                onFocus={handleSearchFocus}
                 className="w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent"
               />
               <button className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -193,6 +217,11 @@ export default function NavigationBar() {
                   />
                 </svg>
               </button>
+              <SearchResults
+                searchQuery={searchQuery}
+                isVisible={showSearchResults}
+                onClose={closeSearchResults}
+              />
             </div>
 
             {/* Mobile Navigation Links */}

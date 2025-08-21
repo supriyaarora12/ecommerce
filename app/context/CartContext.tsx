@@ -31,7 +31,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [cart, setCartState] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(false);
   const { user, updateUserCart, getUserCart } = useAuth();
-  const { showSuccess, showError } = useToast();
+  const { showSuccess } = useToast();
   const lastToastRef = useRef<string>('');
 
   // Load cart from user document when user logs in
@@ -48,7 +48,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         if (userCartItems && userCartItems.length > 0) {
           // Convert user cart items to local cart items
           const localCartItems: CartItem[] = userCartItems.map((item: UserCartItem) => ({
-            id: parseInt(item.productId),
+            id: item.id,
             name: item.name,
             price: item.price,
             quantity: item.quantity,
@@ -80,7 +80,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
 
     try {
       const userCartItems: UserCartItem[] = newCart.map(item => ({
-        productId: item.id.toString(),
+        id: item.id,
         quantity: item.quantity,
         name: item.name,
         price: item.price,

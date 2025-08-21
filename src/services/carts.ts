@@ -23,7 +23,7 @@ export async function updateUserCart(uid: string, cartItems: CartItem[]) {
 // Add item to user's cart
 export async function addItemToUserCart(uid: string, item: CartItem) {
   const currentCart = await getUserCart(uid);
-  const existingItemIndex = currentCart.findIndex(i => i.productId === item.productId);
+  const existingItemIndex = currentCart.findIndex(i => i.id === item.id);
   
   if (existingItemIndex >= 0) {
     currentCart[existingItemIndex].quantity += item.quantity;
@@ -35,9 +35,9 @@ export async function addItemToUserCart(uid: string, item: CartItem) {
 }
 
 // Remove item from user's cart
-export async function removeItemFromUserCart(uid: string, productId: string) {
+export async function removeItemFromUserCart(uid: string, productId: number) {
   const currentCart = await getUserCart(uid);
-  const filteredCart = currentCart.filter(item => item.productId !== productId);
+  const filteredCart = currentCart.filter(item => item.id !== productId);
   await updateUserCart(uid, filteredCart);
 }
 

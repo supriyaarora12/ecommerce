@@ -56,8 +56,7 @@ export async function getUserOrders(uid: string): Promise<Order[]> {
 export async function getAllOrders(
   pageSize: number = 10,
   lastDoc: QueryDocumentSnapshot<DocumentData> | null = null,
-  statusFilter?: string,
-  searchQuery?: string
+  statusFilter?: string
 ): Promise<{ orders: Order[]; lastDoc: QueryDocumentSnapshot<DocumentData> | null; total: number }> {
   let q = query(collection(db, "orders"), orderBy("createdAt", "desc"));
   
