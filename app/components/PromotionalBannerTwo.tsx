@@ -44,7 +44,7 @@ export default function PromotionalBanner() {
     }, []);
 
     return (
-        <section className="container mx-auto px-4 py-12">
+        <section className="container pl-[117px] px-4 py-12">
             <div className="bg-gray-900 overflow-hidden" style={{ aspectRatio: '1170/500' }}>
                 <div className="flex items-cente justify-start relative flex-col lg:flex-row h-full">
 
