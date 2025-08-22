@@ -36,8 +36,8 @@ export default function NavigationBar() {
   };
 
   return (
-    <nav className="bg-white border-b border-gray-200">
-      <div className="max-w-[1457px] w-full px-4 sm:px-8 mx-auto flex items-center justify-between py-4">
+    <nav className="bg-white border-b pl-[117px] pr-[177px] border-gray-200">
+      <div className=" w-full px-4 sm:px-8  flex items-center justify-between py-4">
         
         {/* Brand */}
         <div className="flex items-center">
