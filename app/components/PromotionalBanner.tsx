@@ -32,7 +32,7 @@ export default function PromotionalBanner() {
                     </div>
 
                     {/* Language dropdown */}
-                    <div className="relative ml-4">
+                    <div className="relative  m-[-38px] ml-4">
                         <button
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                             className="flex items-center space-x-1 text-sm hover:text-gray-300 transition-colors"

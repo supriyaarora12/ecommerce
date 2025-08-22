@@ -62,8 +62,8 @@ export default function CartPage() {
           </thead>
           <tbody>
             {cart.length > 0 ? (
-              cart.map((item) => (
-                <tr key={item.id} className="border-t">
+              cart.map((item, index) => (
+                 <tr key={`${item.id || "fallback"}-${index}`} className="border-t">
                   {/* Product */}
                   <td className="p-4 flex items-center gap-4">
                     <Image

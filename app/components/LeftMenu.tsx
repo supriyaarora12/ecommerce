@@ -73,7 +73,7 @@ export default function LeftMenu() {
   return (
     <div className="relative w-64 bg-white border-r border-gray-200">
       <div className="p-6">
-        <h2 className="text-2xl font-bold text-black mb-6">Exclusive</h2>
+        {/* <h2 className="text-2xl font-bold text-black mb-6">Exclusive</h2> */}
         <nav>
           <ul className="space-y-2">
             {menuItems.map((item) => (
