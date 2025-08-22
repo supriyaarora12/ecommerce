@@ -96,84 +96,88 @@ export default function CheckoutPage() {
       [e.target.name]: e.target.value,
     });
   };
+const handlePlaceOrder = async () => {
+  if (!user) return;
 
-  const handlePlaceOrder = async () => {
-    if (!user) return;
-    
-    // Validate required fields
-    const requiredFields = ['firstName', 'lastName', 'streetAddress', 'townCity', 'phoneNumber', 'emailAddress'];
-    const missingFields = requiredFields.filter(field => !formData[field as keyof typeof formData]);
-    
-    if (missingFields.length > 0) {
-      showError(`Please fill in all required fields: ${missingFields.join(', ')}`);
-      return;
-    }
+  // Validate required fields
+  const requiredFields = ['firstName', 'lastName', 'streetAddress', 'townCity', 'phoneNumber', 'emailAddress'];
+  const missingFields = requiredFields.filter(field => !formData[field as keyof typeof formData]);
 
-    if (cart.length === 0) {
-      showError('Your cart is empty');
-      return;
-    }
+  if (missingFields.length > 0) {
+    showError(`Please fill in all required fields: ${missingFields.join(', ')}`);
+    return;
+  }
 
-    setIsProcessing(true);
-    const loadingToast = showLoading('Processing your order...');
-    
-    try {
-      // Create individual orders for each cart item
-      const orderPromises = cart.map(async (item) => {
-        // Create single item order
-        const orderItem = {
-          id: item.id,
-          name: item.name,
-          image: item.image,
-          originalPrice: item.originalPrice,
-          discountedPrice: item.discountedPrice,
-          quantity: item.quantity,
-          price: item.discountedPrice
-        };
+  if (cart.length === 0) {
+    showError('Your cart is empty');
+    return;
+  }
 
-        // Calculate total for this single item
-        const itemTotal = item.discountedPrice * item.quantity;
+  setIsProcessing(true);
+  const loadingToast = showLoading('Processing your order...');
 
-        // Create order for this item
-        const order = {
-          uid: user.uid,
-          items: [orderItem], // Single item array
-          totalAmount: itemTotal,
-          status: "pending" as const,
-          billingDetails: formData,
-          paymentMethod,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        };
+  try {
+    // Create individual orders for each cart item
+    const orderPromises = cart.map(async (item) => {
+      // Create single item order
+      const orderItem = {
+        id: item.id ?? null,
+        name: item.name ?? "Unnamed Product",
+        image: item.image ?? "",
+        originalPrice: item.originalPrice ?? 0,
+        discountedPrice: item.discountedPrice ?? 0,
+        quantity: item.quantity ?? 1,
+        price: item.discountedPrice ?? 0
+      };
 
-        const orderId = await createOrder(order);
-        await addOrderToUser(user.uid, orderId);
-        
-        return orderId;
-      });
+      // Calculate total for this single item
+      const itemTotal = (item.discountedPrice ?? 0) * (item.quantity ?? 1);
 
-      // Wait for all orders to be created
-      await Promise.all(orderPromises);
-      
-      // Save billing details to user profile for future use
-      await saveBillingDetails(user.uid, formData);
-      
-      // Clear cart
-      clearCart();
-      
-      // Dismiss loading toast and show success message
-      dismissToast(loadingToast);
-      showSuccess(`${cart.length} orders placed successfully! Redirecting to your orders...`);
-      router.push('/orders');
-      
-    } catch (error) {
-      console.error('Error placing orders:', error);
-      dismissToast(loadingToast);
-      showError('Failed to place orders. Please try again.');
-    } finally {
-      setIsProcessing(false);
-    }
-  };
+      // Create order for this item
+      const order = {
+        uid: user.uid ?? "guest",
+        items: [orderItem],
+        totalAmount: itemTotal,
+        status: "pending" as const,
+        billingDetails: {
+          ...formData,
+          companyName: formData.companyName || null,
+          apartment: formData.apartment || null,
+        },
+        paymentMethod: paymentMethod ?? "bank",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+
+      // ✅ Remove undefined values before saving
+      const sanitizedOrder = JSON.parse(JSON.stringify(order));
+
+      const orderId = await createOrder(sanitizedOrder);
+      await addOrderToUser(user.uid, orderId);
+
+      return orderId;
+    });
+
+    await Promise.all(orderPromises);
+
+    // Save billing details
+    await saveBillingDetails(user.uid, formData);
+
+    clearCart();
+
+    dismissToast(loadingToast);
+    showSuccess(`${cart.length} orders placed successfully! Redirecting to your orders...`);
+    router.push('/orders');
+
+  } catch (error) {
+    console.error('Error placing orders:', error);
+    dismissToast(loadingToast);
+    showError('Failed to place orders. Please try again.');
+  } finally {
+    setIsProcessing(false);
+  }
+};
+
 
   return (
     <RouteGuard requireAuth>
@@ -272,8 +276,8 @@ export default function CheckoutPage() {
           <div className="border border-gray-200 rounded-lg p-6 space-y-6">
             {/* Products */}
             <div className="space-y-4">
-              {cart.map((item) => (
-                <div key={item.id} className="flex items-center justify-between">
+              {cart.map((item, index) => (
+  <div key={`${item.id || "fallback"}-${index}`} className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <Image src={item.image} alt={item.name} width={60} height={60} className="object-contain" />
                     <span className="text-sm">{item.name}</span>
