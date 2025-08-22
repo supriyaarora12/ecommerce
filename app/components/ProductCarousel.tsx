@@ -112,7 +112,7 @@ export default function ProductCarousel({
       )}
 
       {/* Products Grid */}
-      <div className="relative pl-[117px] overflow-hidden">
+      <div className="relative pl-[117px] pr-[117px] overflow-hidden">
         <div 
           className="flex gap-6 transition-transform duration-300 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 280}px)` }}

@@ -96,7 +96,7 @@ const newReleaseProducts = [
 
 export default function NewReleases() {
     return (
-        <section className="container pl-[117px]pr-[117px] px-4 py-12">
+        <section className="container pl-[117px] pr-[117px] px-4 py-12">
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
                 <div className="flex flex-col gap-3">
