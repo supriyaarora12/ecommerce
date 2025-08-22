@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 const NewArrivals = () => {
   return (
-    <section className="container pl-[117px] px-4 py-16">
+    <section className="container pl-[117px] pr-[117px] px-4 py-16">
       {/* Header */}
       <div className="mb-12">
         <div className="flex items-center gap-2 mb-4">

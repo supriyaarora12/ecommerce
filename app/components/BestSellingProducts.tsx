@@ -48,7 +48,7 @@ const bestSellingProducts = [
 
 export default function BestSellingProducts() {
   return (
-    <section className="container pl-[117px] px-4 py-12 bg-white">
+    <section className="container pl-[117px] pr-[117px] px-4 py-12 bg-white">
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div className="flex flex-col gap-3">
