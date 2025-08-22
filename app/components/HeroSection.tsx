@@ -4,7 +4,7 @@ import HeroCarousel from './HeroCarousel';
 export default function HeroSection() {
   return (
     <section className=" container px-4 pb-8">
-      <div className="pl-[95px] flex flex-col lg:flex-row gap-4 lg:gap-6">
+      <div className="pl-[95px] pr-[95px] flex flex-col lg:flex-row gap-4 lg:gap-6">
         
     {/* Left Menu - Now always visible */}
     <div>
