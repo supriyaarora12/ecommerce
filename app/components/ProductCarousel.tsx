@@ -46,10 +46,10 @@ export default function ProductCarousel({
   };
 
   return (
-    <section className={`container mx-auto px-4 py-12 ${className}`}>
+    <section className={`container  px-4 py-12 ${className}`}>
       {/* Header */}
       {(title || subtitle || showCountdown) && (
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex pl-[117px] items-center justify-between mb-8">
           <div className="flex items-center gap-4">
             {subtitle && (
               <div className="flex items-center gap-2">
@@ -112,7 +112,7 @@ export default function ProductCarousel({
       )}
 
       {/* Products Grid */}
-      <div className="relative overflow-hidden">
+      <div className="relative pl-[117px] overflow-hidden">
         <div 
           className="flex gap-6 transition-transform duration-300 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * 280}px)` }}

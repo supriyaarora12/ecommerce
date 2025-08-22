@@ -24,7 +24,7 @@ export default function BrowseByCategory() {
   const [hoveredCategory, setHoveredCategory] = useState<number | null>(null);
 
   return (
-    <section className="container mx-auto px-4 py-8 sm:py-12">
+    <section className="container pl-[117px] px-4 py-8 sm:py-12">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8 gap-4">
         <div className="flex flex-col gap-2 sm:gap-3">
