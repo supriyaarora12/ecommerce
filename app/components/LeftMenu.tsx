@@ -15,55 +15,55 @@ const menuItems: MenuItem[] = [
     id: 'womens-fashion',
     label: "Woman's Fashion",
     hasSubmenu: true,
-    submenu: ['Dresses', 'Tops', 'Bottoms', 'Accessories', 'Bags']
+    submenu: ['dresses', 'tops', 'bottoms', 'accessories', 'bags']
   },
   {
     id: 'mens-fashion',
     label: "Men's Fashion",
     hasSubmenu: true,
-    submenu: ['Shirts', 'Pants', 'Suits',  'Accessories', 'Watches']
+    submenu: ['shirts', 'pants', 'suits', 'accessories', 'watches']
   },
   {
     id: 'electronics',
     label: 'Electronics',
     hasSubmenu: true,
-    submenu: ['Smartphones', 'Laptops', 'Tablets',  'Cameras', 'Gaming']
+    submenu: ['smartphones', 'laptops', 'tablets', 'cameras', 'gaming']
   },
   {
     id: 'home-lifestyle',
     label: 'Home & Lifestyle',
     hasSubmenu: true,
-    submenu: ['Furniture', 'Decor', 'Kitchen', 'Bath', 'Lighting']
+    submenu: ['furniture', 'decor', 'kitchen', 'bath', 'lighting']
   },
   {
     id: 'medicine',
     label: 'Medicine',
     hasSubmenu: true,
-    submenu: ['Prescription',  'Vitamins', 'First Aid', 'Personal Care', 'Medical Devices']
+    submenu: ['prescription', 'vitamins', 'first-aid', 'personal-care', 'medical-devices']
   },
   {
     id: 'sports-outdoor',
     label: 'Sports & Outdoor',
     hasSubmenu: true,
-    submenu: ['Fitness',  'Outdoor Gear', 'Camping', 'Hiking', 'Water Sports']
+    submenu: ['fitness', 'outdoor-gear', 'camping', 'hiking', 'water-sports']
   },
   {
     id: 'babies-toys',
     label: "Baby's & Toys",
     hasSubmenu: true,
-    submenu: ['Clothing', 'Diapers', 'Feeding', 'Toys', 'Books']
+    submenu: ['clothing', 'diapers', 'feeding', 'toys', 'books']
   },
   {
     id: 'groceries-pets',
     label: 'Groceries & Pets',
     hasSubmenu: true,
-    submenu: [ 'Pantry', 'Beverages', 'Pet Food',  'Pet Toys']
+    submenu: ['pantry', 'beverages', 'pet-food', 'pet-toys']
   },
   {
     id: 'health-beauty',
     label: 'Health & Beauty',
     hasSubmenu: true,
-    submenu: ['Skincare', 'Makeup', 'Fragrances', 'hair-care', 'Bath & Body']
+    submenu: ['skincare', 'makeup', 'fragrances', 'hair-care', 'bath-body']
   }
 ];
 
@@ -124,12 +124,11 @@ export default function LeftMenu() {
                           {item.submenu?.map((subItem, index) => (
                             <li key={index}>
                               <Link
-                           href={`/category/${subItem.toLowerCase().replace(/\s+/g, "-")}`}
-                          className="block py-2 px-3 text-sm text-gray-700 hover:text-black hover:bg-gray-50 rounded-md transition-colors duration-200"
-                        >
-                     {subItem}
-                        </Link>
-
+                                href={`/category/${subItem}`}
+                                className="block py-2 px-3 text-sm text-gray-700 hover:text-black hover:bg-gray-50 rounded-md transition-colors duration-200"
+                              >
+                                {subItem.charAt(0).toUpperCase() + subItem.slice(1).replace(/-/g, ' ')}
+                              </Link>
                             </li>
                           ))}
                         </ul>

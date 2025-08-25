@@ -1,9 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Product from './Product';
-import Link from 'next/link';
 
 interface ProductData {
   id: number;
@@ -36,6 +35,58 @@ export default function ProductCarousel({
   className = ""
 }: ProductCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+  const [countdown, setCountdown] = useState({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0
+  });
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Countdown timer effect
+  useEffect(() => {
+    if (!showCountdown) return;
+
+    // Set target date (24 hours from now)
+    const targetDate = new Date();
+    targetDate.setHours(targetDate.getHours() + 24);
+
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const distance = targetDate.getTime() - now;
+
+      if (distance > 0) {
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        setCountdown({ days, hours, minutes, seconds });
+      } else {
+        // Reset countdown when it reaches zero
+        setCountdown({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+      }
+    };
+
+    // Update immediately
+    updateCountdown();
+
+    // Update every second
+    const interval = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(interval);
+  }, [showCountdown]);
 
   const nextSlide = () => {
     setCurrentIndex((prev) => (prev + 1) % Math.max(1, products.length - 4));
@@ -45,11 +96,16 @@ export default function ProductCarousel({
     setCurrentIndex((prev) => (prev - 1 + Math.max(1, products.length - 4)) % Math.max(1, products.length - 4));
   };
 
+  const slideWidth = isMobile ? 260 : 300;
+
+  // Format countdown values to always show two digits
+  const formatTime = (value: number) => value.toString().padStart(2, '0');
+
   return (
-    <section className={`container  px-4 py-12 ${className}`}>
+    <section className={`w-full px-4 sm:px-6 lg:px-0 py-8 sm:py-12 ${className}`}>
       {/* Header */}
       {(title || subtitle || showCountdown) && (
-        <div className="flex pl-[117px] items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row sm:pl-[117px] items-start sm:items-center justify-between mb-8 gap-4">
           <div className="flex items-center gap-4">
             {subtitle && (
               <div className="flex items-center gap-2">
@@ -62,19 +118,25 @@ export default function ProductCarousel({
             )}
           </div>
           
-          {/* Countdown Timer - Hidden on mobile */}
+          {/* Countdown Timer - Responsive */}
           {showCountdown && (
-            <div className="hidden md:flex items-center gap-2">
-              {["Days", "Hours", "Minutes", "Seconds"].map((label, idx) => (
-                <div key={label} className="flex items-center gap-1">
-                  <span className="text-xs text-gray-600">{label}</span>
-                  <div className="bg-gray-100 px-2 py-1 rounded">
-                    <span className="font-bold text-sm">
-                      {["03", "23", "19", "56"][idx]}
+            <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+              {[
+                { label: "Days", value: countdown.days },
+                { label: "Hours", value: countdown.hours },
+                { label: "Minutes", value: countdown.minutes },
+                { label: "Seconds", value: countdown.seconds }
+              ].map((item, idx) => (
+                <div key={item.label} className="flex items-center gap-1">
+                  <span className="text-gray-600 hidden sm:inline">{item.label}</span>
+                  <span className="text-gray-600 sm:hidden">{item.label.charAt(0)}</span>
+                  <div className="bg-gray-100 px-1 sm:px-2 py-1 rounded">
+                    <span className="font-bold">
+                      {formatTime(item.value)}
                     </span>
                   </div>
                   {idx < 3 && (
-                    <span className="text-red-500 font-bold text-sm">:</span>
+                    <span className="text-red-500 font-bold">:</span>
                   )}
                 </div>
               ))}
@@ -86,24 +148,26 @@ export default function ProductCarousel({
             <div className="flex gap-2">
               <button
                 onClick={prevSlide}
-                className="rounded-full bg-white flex items-center justify-center"
+                className="rounded-full bg-white flex items-center justify-center p-2 hover:bg-gray-50 transition-colors"
               >
                 <Image
                   src="/ui/product/Left Arrow.svg"
                   alt="Previous"
-                  width={32}
-                  height={32}
+                  width={24}
+                  height={24}
+                  className="w-6 h-6 sm:w-8 sm:h-8"
                 />
               </button>
               <button
                 onClick={nextSlide}
-                className="rounded-full bg-white flex items-center justify-center"
+                className="rounded-full bg-white flex items-center justify-center p-2 hover:bg-gray-50 transition-colors"
               >
                 <Image
                   src="/ui/product/Right Arrow.svg"
                   alt="Next"
-                  width={32}
-                  height={32}
+                  width={24}
+                  height={24}
+                  className="w-6 h-6 sm:w-8 sm:h-8"
                 />
               </button>
             </div>
@@ -112,10 +176,10 @@ export default function ProductCarousel({
       )}
 
       {/* Products Grid */}
-      <div className="relative pl-[117px] pr-[117px] overflow-hidden">
+      <div className="relative pl-[117px] overflow-hidden">
         <div 
-          className="flex gap-6 transition-transform duration-300 ease-in-out"
-          style={{ transform: `translateX(-${currentIndex * 280}px)` }}
+          className="flex gap-4 sm:gap-6 transition-transform duration-300 ease-in-out"
+          style={{ transform: `translateX(-${currentIndex * slideWidth}px)` }}
         >
           {products.map((product) => (
             <Product

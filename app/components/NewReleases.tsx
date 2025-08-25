@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 const newReleaseProducts = [
     {
-        id: 1,
+        id: 11,
         name: "Breed Dry Dog Food",
         originalPrice: 100,
         discountedPrice: 100,
@@ -16,7 +16,7 @@ const newReleaseProducts = [
         isNew: false
     },
     {
-        id: 2,
+        id: 12,
         name: "CANON EOS DSLR Camera",
         originalPrice: 360,
         discountedPrice: 360,
@@ -27,7 +27,7 @@ const newReleaseProducts = [
         isNew: false
     },
     {
-        id: 3,
+        id: 13,
         name: "ASUS FHD Gaming Laptop",
         originalPrice: 700,
         discountedPrice: 700,
@@ -38,7 +38,7 @@ const newReleaseProducts = [
         isNew: false
     },
     {
-        id: 4,
+        id: 14,
         name: "Curology Product Set",
         originalPrice: 500,
         discountedPrice: 500,
@@ -49,7 +49,7 @@ const newReleaseProducts = [
         isNew: false
     },
     {
-        id: 5,
+        id: 15,
         name: "Kids Electric Car",
         originalPrice: 960,
         discountedPrice: 960,
@@ -60,7 +60,7 @@ const newReleaseProducts = [
         isNew: true
     },
     {
-        id: 6,
+        id: 16,
         name: "Jr. Zoom Soccer Cleats",
         originalPrice: 1160,
         discountedPrice: 1160,
@@ -71,7 +71,7 @@ const newReleaseProducts = [
         isNew: false
     },
     {
-        id: 7,
+        id: 17,
         name: "GP11 Shooter USB Gamepad",
         originalPrice: 660,
         discountedPrice: 660,
@@ -82,7 +82,7 @@ const newReleaseProducts = [
         isNew: true
     },
     {
-        id: 8,
+        id: 18,
         name: "Quilted Satin Jacket",
         originalPrice: 660,
         discountedPrice: 660,

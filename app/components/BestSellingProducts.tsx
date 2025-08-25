@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 const bestSellingProducts = [
   {
-    id: 1,
+    id: 7,
     name: "The north coat",
     originalPrice: 360,
     discountedPrice: 260,
@@ -15,7 +15,7 @@ const bestSellingProducts = [
     image: "/ui/homepage/coat.svg"
   },
   {
-    id: 2,
+    id: 8,
     name: "Gucci duffle bag",
     originalPrice: 1160,
     discountedPrice: 960,
@@ -25,7 +25,7 @@ const bestSellingProducts = [
     image: "/ui/homepage/bag.svg"
   },
   {
-    id: 3,
+    id: 9,
     name: "RGB liquid CPU Cooler",
     originalPrice: 170,
     discountedPrice: 160,
@@ -35,7 +35,7 @@ const bestSellingProducts = [
     image: "/ui/homepage/cooler.svg"
   },
   {
-    id: 4,
+    id: 10,
     name: "Small BookSelf",
     originalPrice: 360,
     discountedPrice: 360,

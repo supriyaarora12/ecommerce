@@ -14,15 +14,38 @@ export default function LoginForm() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Basic validation
+    if (!email.trim()) {
+      showError('Please enter your email address');
+      return;
+    }
+    
+    if (!password) {
+      showError('Please enter your password');
+      return;
+    }
+    
     try {
       setLoading(true);
       await signIn(email.trim(), password);
       showSuccess('Successfully logged in!');
     } catch (err) {
       if (err instanceof FirebaseError) {
-        showError(err.message);
+        // Handle specific Firebase errors
+        if (err.code === 'auth/user-not-found') {
+          showError('No account found with this email. Please check your email or sign up.');
+        } else if (err.code === 'auth/wrong-password') {
+          showError('Incorrect password. Please try again.');
+        } else if (err.code === 'auth/invalid-email') {
+          showError('Please enter a valid email address.');
+        } else if (err.code === 'auth/too-many-requests') {
+          showError('Too many failed attempts. Please try again later.');
+        } else {
+          showError(err.message);
+        }
       } else {
-        showError("Failed to sign in");
+        showError("Failed to sign in. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -36,9 +59,20 @@ export default function LoginForm() {
       showSuccess('Successfully logged in with Google!');
     } catch (err) {
       if (err instanceof FirebaseError) {
-        showError(err.message);
+        // Handle specific Firebase errors
+        if (err.code === 'auth/operation-not-allowed') {
+          showError('Google sign-in is not enabled. Please contact support or try email sign-in.');
+        } else if (err.code === 'auth/popup-closed-by-user') {
+          showError('Sign-in was cancelled. Please try again.');
+        } else if (err.code === 'auth/popup-blocked') {
+          showError('Popup was blocked. Please allow popups for this site and try again.');
+        } else if (err.code === 'auth/account-exists-with-different-credential') {
+          showError('An account already exists with this email using a different sign-in method.');
+        } else {
+          showError(err.message);
+        }
       } else {
-        showError("Failed to sign in with Google");
+        showError("Failed to sign in with Google. Please try again.");
       }
     } finally {
       setLoading(false);
@@ -51,7 +85,7 @@ export default function LoginForm() {
         <div>
           <input
             type="email"
-            placeholder="Email or Phone Number"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="w-full px-4 py-3 border-b border-gray-300 focus:outline-none focus:border-red-500 transition-colors"
@@ -100,6 +134,9 @@ export default function LoginForm() {
           />
           <span>Continue with Google</span>
         </button>
+        <p className="text-xs text-gray-500 mt-2 text-center">
+          Having trouble with Google sign-in? Try email sign-in above.
+        </p>
       </div>
     </>
   );
