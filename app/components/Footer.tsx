@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Footer() {
   return (
@@ -42,11 +43,11 @@ export default function Footer() {
           <div className="lg:col-span-1">
             <h3 className="text-xl font-semibold mb-4">Account</h3>
             <ul className="space-y-2 text-gray-300">
-              <li><a href="#" className="hover:text-white transition-colors">My Account</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Login / Register</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Cart</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Wishlist</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Shop</a></li>
+              <li><Link href="/account" className="hover:text-white transition-colors">My Account</Link></li>
+              <li><Link href="/login" className="hover:text-white transition-colors">Login / Register</Link></li>
+              <li><Link href="/cart" className="hover:text-white transition-colors">Cart</Link></li>
+              <li><Link href="/wishlist" className="hover:text-white transition-colors">Wishlist</Link></li>
+              <li><Link href="/products" className="hover:text-white transition-colors">Shop</Link></li>
             </ul>
           </div>
 
@@ -54,10 +55,10 @@ export default function Footer() {
           <div className="lg:col-span-1">
             <h3 className="text-xl font-semibold mb-4">Quick Link</h3>
             <ul className="space-y-2 text-gray-300">
-              <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Terms Of Use</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">FAQ</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+              <li><Link href="/about" className="hover:text-white transition-colors">About Us</Link></li>
+              <li><Link href="/contact" className="hover:text-white transition-colors">Contact</Link></li>
+              <li><Link href="/products" className="hover:text-white transition-colors">Products</Link></li>
+              <li><Link href="/orders" className="hover:text-white transition-colors">Orders</Link></li>
             </ul>
           </div>
 
@@ -101,7 +102,7 @@ export default function Footer() {
 
             {/* Social Media Icons */}
             <div className="flex space-x-4">
-              <a href="#" className="hover:opacity-80 transition-opacity">
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
                 <Image
                   src="/ui/facebook.png"
                   alt="Facebook"
@@ -110,7 +111,7 @@ export default function Footer() {
                   className="w-6 h-6"
                 />
               </a>
-              <a href="#" className="hover:opacity-80 transition-opacity">
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
                 <Image
                   src="/ui/twiiter.png"
                   alt="Twitter"
@@ -119,7 +120,7 @@ export default function Footer() {
                   className="w-6 h-6"
                 />
               </a>
-              <a href="#" className="hover:opacity-80 transition-opacity">
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
                 <Image
                   src="/ui/insta.png"
                   alt="Instagram"
@@ -128,7 +129,7 @@ export default function Footer() {
                   className="w-6 h-6"
                 />
               </a>
-              <a href="#" className="hover:opacity-80 transition-opacity">
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:opacity-80 transition-opacity">
                 <Image
                   src="/ui/linkedin.png"
                   alt="LinkedIn"

@@ -54,9 +54,9 @@ export default function Product({
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault(); // Prevent navigation when clicking add to cart
-    e.stopPropagation(); // Prevent event bubbling
+    e.stopPropagation(); 
     
-    if (isInCart) return; // Don't add if already in cart
+    if (isInCart) return; 
     
     setLoading(true);
     addToCart({
