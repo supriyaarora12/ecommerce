@@ -118,8 +118,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signInWithGoogle = async () => {
-    await signInWithPopup(auth, googleProvider);
-    router.push('/');
+    try {
+      console.log('🔍 Starting Google sign-in process...');
+      
+      // Add custom parameters to the Google provider
+      googleProvider.setCustomParameters({
+        prompt: 'select_account'
+      });
+      
+      console.log('🔍 Google provider configured, attempting popup...');
+      const result = await signInWithPopup(auth, googleProvider);
+      
+      console.log('🔍 Google sign-in successful:', result);
+      
+      // Check if this is a new user by checking if the user was created recently
+      const isNewUser = result.user.metadata.creationTime === result.user.metadata.lastSignInTime;
+      
+      if (isNewUser) {
+        showSuccess('Account created successfully with Google!');
+      } else {
+        showSuccess('Signed in successfully with Google!');
+      }
+      
+      router.push('/');
+    } catch (error) {
+      console.error('❌ Google sign-in error:', error);
+      throw error; // Re-throw to be handled by the component
+    }
   };
 
   const signOut = async () => {

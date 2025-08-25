@@ -11,10 +11,10 @@ export default function SignupPage() {
       <div className="min-h-screen bg-white">
         <div className="flex h-screen">
           {/* Left Section - Visual Graphic */}
-          <div className="hidden lg:flex lg:w-1/2 items-center justify-center p-8">
+          <div className="hidden lg:flex lg:w-1/2 items-center justify-center">
             <div className="relative w-full h-full">
               <Image
-                src="/ui/login/side.png"
+                src="/ui/login/sideimage-regfister.png"
                 alt="Signup illustration"
                 fill
                 className="object-contain"

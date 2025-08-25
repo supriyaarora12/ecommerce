@@ -43,10 +43,22 @@ export default function AccountDropdown() {
             width={32} 
             height={32} 
             className="rounded-full"
+            onError={(e) => {
+              // Fallback to default avatar if image fails to load
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+              const fallback = target.nextElementSibling as HTMLImageElement;
+              if (fallback) fallback.style.display = 'block';
+            }}
           />
-        ) : (
-          <Image src="/ui/accountdropdown/user.svg" alt="Account" width={32} height={32} />
-        )}
+        ) : null}
+        <Image 
+          src="/ui/accountdropdown/user.svg" 
+          alt="Account" 
+          width={32} 
+          height={32}
+          style={{ display: user?.photoURL ? 'none' : 'block' }}
+        />
       </button>
 
       {/* Dropdown Menu */}

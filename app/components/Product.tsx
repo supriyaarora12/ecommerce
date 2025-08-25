@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext'; 
+import { useState } from 'react';
 
 import WishListButton from './WishListButton';
 import { FavoriteItem } from '../../src/context/AuthContext';
@@ -32,7 +33,11 @@ export default function Product({
   
   showAddToCart = true
 }: ProductProps) {
-  const { addToCart } = useCart();
+  const { addToCart, cart } = useCart();
+  const [loading, setLoading] = useState(false);
+
+  // Check if product is already in cart
+  const isInCart = cart.some(item => item.id === id);
 
   // Create FavoriteItem object for WishListButton
   const favoriteItem: FavoriteItem = {
@@ -45,6 +50,29 @@ export default function Product({
     discount,
     rating,
     reviews
+  };
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigation when clicking add to cart
+    e.stopPropagation(); // Prevent event bubbling
+    
+    if (isInCart) return; // Don't add if already in cart
+    
+    setLoading(true);
+    addToCart({
+      id,
+      name,
+      originalPrice,
+      discountedPrice,
+      discount,
+      rating,
+      reviews,
+      image,
+      
+      price: discountedPrice,
+      quantity: 1
+    });
+    setLoading(false);
   };
 
   const renderStars = (rating: number) => {
@@ -94,35 +122,40 @@ export default function Product({
 
   return (
     <Link href={`/product/${id}`} className="block">
-      <div className="min-w-[260px] bg-white rounded-lg shadow-sm  border-gray-100 p-4">
+      <div className="w-full max-w-[280px] bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 p-3 sm:p-4">
         {/* Product Image */}
         <div className="relative mb-4 group">
-          <div className="bg-gray-100 rounded-lg p-4 h-48 flex items-center justify-center ">
+          <div className="bg-gray-100 rounded-lg p-4 h-40 sm:h-48 flex items-center justify-center overflow-hidden">
             <Image
               src={image}
               alt={name}
               width={200}
               height={200}
-              className="object-cover "
+              className="object-contain w-full h-full max-w-full max-h-full"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = '/ui/product/placeholder-image.svg';
+              }}
             />
           </div>
           
           {/* Discount Tag */}
           {discount > 0 && (
-            <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+            <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">
               -{discount}%
             </div>
           )}
           
           {/* Action Icons */}
           <div className="absolute top-2 right-2 flex flex-col gap-2">
-            <WishListButton item={favoriteItem} />
-            <button className="w-8 h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
+            <WishListButton item={favoriteItem} size="sm" />
+            <button className="w-6 h-6 sm:w-8 sm:h-8 bg-white rounded-full shadow-md flex items-center justify-center hover:bg-gray-50 transition-colors">
               <Image
                 src="/ui/product/Eye.svg"
                 alt="Quick view"
-                width={24}
-                height={24}
+                width={16}
+                height={16}
+                className="w-4 h-4 sm:w-5 sm:h-5"
               />
             </button>
           </div>
@@ -131,26 +164,15 @@ export default function Product({
           {showAddToCart && (
             <div className="absolute bottom-0 w-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg">
               <button
-                onClick={(e) => {
-                  e.preventDefault(); // Prevent navigation when clicking add to cart
-                  addToCart({
-                    id,
-                    name,
-                    originalPrice,
-                    discountedPrice,
-                    discount,
-                    rating,
-                    reviews,
-                    image,
-                    
-                    price: discountedPrice,
-                    quantity: 1
-                  });
-                  // Removed router.push('/cart') - no redirect
-                }}
-                className="text-white py-3 px-8 rounded-md text-sm font-medium transition-colors shadow-lg w-full bg-black"
+                onClick={handleAddToCart}
+                disabled={loading || isInCart}
+                className={`text-white py-2 sm:py-3 px-4 sm:px-8 rounded-md text-xs sm:text-sm font-medium transition-colors shadow-lg w-full ${
+                  isInCart 
+                    ? 'bg-green-500 cursor-default' 
+                    : 'bg-black hover:bg-gray-800'
+                }`}
               >
-                Add To Cart
+                {loading ? "Adding..." : isInCart ? "Added to Cart" : "Add To Cart"}
               </button>
             </div>
           )}
@@ -158,18 +180,20 @@ export default function Product({
 
         {/* Product Info */}
         <div className="space-y-2">
-          <h3 className="font-medium text-gray-900 text-sm line-clamp-2">
+          <h3 className="font-medium text-gray-900 text-xs sm:text-sm line-clamp-2 min-h-[2.5rem]">
             {name}
           </h3>
           
           {/* Pricing */}
-          <div className="flex items-center gap-2">
-            <span className="text-red-500 font-bold text-lg">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-red-500 font-bold text-base sm:text-lg">
               ${discountedPrice}
             </span>
-            <span className="text-gray-400 line-through text-sm">
-              ${originalPrice}
-            </span>
+            {originalPrice > discountedPrice && (
+              <span className="text-gray-400 line-through text-xs sm:text-sm">
+                ${originalPrice}
+              </span>
+            )}
           </div>
           
           {/* Rating */}

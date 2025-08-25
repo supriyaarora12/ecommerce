@@ -38,7 +38,7 @@ export default function BrowseByCategory() {
         {/* Navigation Arrows - Hidden on mobile */}
         <div className="hidden sm:flex gap-2">
           <button className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center hover:bg-gray-200 transition-colors">
- <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M15 18L9 12L15 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
@@ -67,7 +67,7 @@ export default function BrowseByCategory() {
                 width={48}
                 height={48}
                 className={`transition-colors duration-300 w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 ${
-  hoveredCategory === category.id ? 'filter brightness-0 invert' : 'filter brightness-0'
+                  hoveredCategory === category.id ? 'filter brightness-0 invert' : 'filter brightness-0'
                 }`}
               />
             </div>
@@ -80,5 +80,5 @@ export default function BrowseByCategory() {
         ))}
       </div>
     </section>
-  );
+  );
 }
