@@ -118,16 +118,11 @@ export default function ProductCarousel({
           style={{ transform: `translateX(-${currentIndex * 280}px)` }}
         >
           {products.map((product) => (
-            <Link
+            <Product
               key={product.id}
-              href={`/product/${product.id}`}
-              className="block"
-            >
-              <Product
-                {...product}
-                showAddToCart={showAddToCart}
-              />
-            </Link>
+              {...product}
+              showAddToCart={showAddToCart}
+            />
           ))}
         </div>
       </div>

@@ -11,12 +11,132 @@ import { getProduct, getRelatedProducts, Product } from '../../../src/services/p
 import WishListButton from '../../components/WishListButton';
 import { FavoriteItem } from '../../../src/context/AuthContext';
 
+// Extended Product interface to include static product properties
+interface ExtendedProduct extends Product {
+  originalPrice?: number;
+  rating?: number;
+  reviews?: number;
+}
+
+// Static products data (matching the ones used in FlashSales, BestSellingProducts, etc.)
+const staticProducts: ExtendedProduct[] = [
+  {
+    id: "1",
+    name: "HAVIT HV-G92 Gamepad",
+    price: 120,
+    originalPrice: 160,
+    category: "gaming",
+    imageUrl: "/ui/home/gampet.svg",
+    stock: 15,
+    description: "High-quality gaming controller with ergonomic design and responsive buttons.",
+    rating: 5,
+    reviews: 88
+  },
+  {
+    id: "2", 
+    name: "AK-900 Wired Keyboard",
+    price: 960,
+    originalPrice: 1160,
+    category: "electronics",
+    imageUrl: "/ui/home/keyboard.svg",
+    stock: 20,
+    description: "Professional mechanical keyboard with customizable RGB lighting.",
+    rating: 4.5,
+    reviews: 75
+  },
+  {
+    id: "3",
+    name: "IPS LCD Gaming Monitor",
+    price: 370,
+    originalPrice: 400,
+    category: "electronics",
+    imageUrl: "/ui/home/monitor.svg",
+    stock: 12,
+    description: "High-resolution gaming monitor with fast refresh rate and low latency.",
+    rating: 5,
+    reviews: 99
+  },
+  {
+    id: "4",
+    name: "S-Series Comfort Chair",
+    price: 375,
+    originalPrice: 400,
+    category: "furniture",
+    imageUrl: "/ui/home/chair.svg",
+    stock: 8,
+    description: "Ergonomic office chair designed for maximum comfort during long work sessions.",
+    rating: 5,
+    reviews: 99
+  },
+  {
+    id: "5",
+    name: "Gaming Headset Pro",
+    price: 150,
+    originalPrice: 200,
+    category: "electronics",
+    imageUrl: "/ui/home/headset.svg",
+    stock: 25,
+    description: "Professional gaming headset with noise cancellation and crystal clear audio.",
+    rating: 4.5,
+    reviews: 65
+  },
+  // Best Selling Products
+  {
+    id: "6",
+    name: "The North Coat",
+    price: 260,
+    originalPrice: 360,
+    category: "clothing",
+    imageUrl: "/ui/homepage/coat.svg",
+    stock: 10,
+    description: "Premium winter coat with excellent insulation and stylish design.",
+    rating: 4.8,
+    reviews: 65
+  },
+  {
+    id: "7",
+    name: "Gucci Duffle Bag",
+    price: 960,
+    originalPrice: 1160,
+    category: "bags",
+    imageUrl: "/ui/homepage/bag.svg",
+    stock: 5,
+    description: "Luxury duffle bag made from premium materials with elegant design.",
+    rating: 4.9,
+    reviews: 325
+  },
+  {
+    id: "8",
+    name: "RGB Liquid CPU Cooler",
+    price: 160,
+    originalPrice: 170,
+    category: "electronics",
+    imageUrl: "/ui/homepage/cpu.svg",
+    stock: 15,
+    description: "High-performance CPU cooler with RGB lighting and efficient heat dissipation.",
+    rating: 4.7,
+    reviews: 65
+  },
+  {
+    id: "9",
+    name: "Small Bookshelf",
+    price: 360,
+    originalPrice: 400,
+    category: "furniture",
+    imageUrl: "/ui/homepage/bookshelf.svg",
+    stock: 8,
+    description: "Compact bookshelf perfect for organizing books and decorative items.",
+    rating: 4.6,
+    reviews: 65
+  }
+];
+
 export default function ProductDetailPage() {
   const { id } = useParams();
   const { addToCart } = useCart();
   const { showSuccess } = useToast();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [product, setProduct] = useState<ExtendedProduct | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<ExtendedProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingRelated, setLoadingRelated] = useState(false);
   const [error, setError] = useState('');
@@ -29,9 +149,22 @@ export default function ProductDetailPage() {
       
       try {
         setLoading(true);
+        
+        // First, check if it's a static product
+        const staticProduct = staticProducts.find(p => p.id === id);
+        if (staticProduct) {
+          setProduct(staticProduct);
+          // For static products, show other static products as related
+          const otherStaticProducts = staticProducts.filter(p => p.id !== id).slice(0, 4);
+          setRelatedProducts(otherStaticProducts);
+          setLoading(false);
+          return;
+        }
+        
+        // If not static, try to fetch from Firebase
         const productData = await getProduct(id as string);
         if (productData) {
-          setProduct(productData);
+          setProduct(productData as ExtendedProduct);
           // Fetch related products after getting the main product
           fetchRelatedProducts(productData.id!, productData.category);
         } else {
@@ -49,7 +182,7 @@ export default function ProductDetailPage() {
       try {
         setLoadingRelated(true);
         const related = await getRelatedProducts(productId, category, 4);
-        setRelatedProducts(related);
+        setRelatedProducts(related as ExtendedProduct[]);
       } catch (err) {
         console.error('Error fetching related products:', err);
       } finally {
@@ -94,11 +227,11 @@ export default function ProductDetailPage() {
     name: product.name,
     image: product.imageUrl || '/ui/homepage/chair.svg',
     price: product.price,
-    originalPrice: product.price,
+    originalPrice: product.originalPrice || product.price,
     discountedPrice: product.price,
-    discount: 0,
-    rating: 0,
-    reviews: 0
+    discount: product.originalPrice ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0,
+    rating: product.rating || 0,
+    reviews: product.reviews || 0
   };
 
   const handleAddToCart = () => {
@@ -108,11 +241,11 @@ export default function ProductDetailPage() {
       price: product.price,
       quantity: quantity,
       image: product.imageUrl || '/ui/homepage/chair.svg',
-      originalPrice: product.price,
+      originalPrice: product.originalPrice || product.price,
       discountedPrice: product.price,
-      discount: 0,
-      rating: 0,
-      reviews: 0,
+      discount: product.originalPrice ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100) : 0,
+      rating: product.rating || 0,
+      reviews: product.reviews || 0,
     });
     showSuccess('Product added to cart!');
   };
@@ -157,6 +290,9 @@ export default function ProductDetailPage() {
           {/* Price */}
           <div className="flex items-center gap-3 mt-4">
             <p className="text-2xl font-bold text-red-500">${product.price}</p>
+            {product.originalPrice && product.originalPrice !== product.price && (
+              <p className="text-lg text-gray-400 line-through">${product.originalPrice}</p>
+            )}
           </div>
 
           {/* Description */}
@@ -172,6 +308,14 @@ export default function ProductDetailPage() {
             <div className="mt-4">
               <span className="text-gray-500">Category: </span>
               <span className="font-medium capitalize">{product.category}</span>
+            </div>
+          )}
+
+          {/* Rating */}
+          {product.rating && (
+            <div className="mt-4">
+              <span className="text-gray-500">Rating: </span>
+              <span className="font-medium">{product.rating}/5 ({product.reviews} reviews)</span>
             </div>
           )}
 
@@ -248,11 +392,11 @@ export default function ProductDetailPage() {
                 name: relatedProduct.name,
                 image: relatedProduct.imageUrl || '/ui/homepage/chair.svg',
                 price: relatedProduct.price,
-                originalPrice: relatedProduct.price,
+                originalPrice: relatedProduct.originalPrice || relatedProduct.price,
                 discountedPrice: relatedProduct.price,
-                discount: 0,
-                rating: 0,
-                reviews: 0
+                discount: relatedProduct.originalPrice ? Math.round(((relatedProduct.originalPrice - relatedProduct.price) / relatedProduct.originalPrice) * 100) : 0,
+                rating: relatedProduct.rating || 0,
+                reviews: relatedProduct.reviews || 0
               };
 
               return (
@@ -291,6 +435,9 @@ export default function ProductDetailPage() {
                     </Link>
                     <div className="flex justify-center items-center gap-2 mt-2">
                       <span className="text-red-500 font-bold">${relatedProduct.price}</span>
+                      {relatedProduct.originalPrice && relatedProduct.originalPrice !== relatedProduct.price && (
+                        <span className="text-gray-400 line-through text-sm">${relatedProduct.originalPrice}</span>
+                      )}
                     </div>
                     
                     {/* Stock Status */}
