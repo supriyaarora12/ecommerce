@@ -34,8 +34,8 @@ export default function Footer() {
             <h3 className="text-xl font-semibold mb-4">Support</h3>
             <div className="space-y-2 text-gray-300">
               <p>111 Bijoy sarani, Dhaka, DH 1515, Bangladesh.</p>
-              <p>exclusive@gmail.com</p>
-              <p>+88015-88888-9999</p>
+              <a href="mailto:exclusive@gmail.com" className="hover:text-white transition-colors">exclusive@gmail.com</a>
+              <a href="tel:+88015888889999" className="hover:text-white transition-colors">+88015-88888-9999</a>
             </div>
           </div>
 
@@ -82,20 +82,24 @@ export default function Footer() {
 
             {/* App Store Badges */}
             <div className="space-y-2 mb-4">
-              <Image
-                src="/ui/playstore.png"
-                alt="GET IT ON Google Play"
-                width={120}
-                height={40}
-                className="w-30 h-10"
-              />
-              <Image
-                src="/ui/appstore.png"
-                alt="Download on the App Store"
-                width={120}
-                height={40}
-                className="w-30 h-10"
-              />
+              <a href="https://play.google.com/store" target="_blank" rel="noopener noreferrer" className="block">
+                <Image
+                  src="/ui/playstore.png"
+                  alt="GET IT ON Google Play"
+                  width={120}
+                  height={40}
+                  className="w-30 h-10"
+                />
+              </a>
+              <a href="https://apps.apple.com" target="_blank" rel="noopener noreferrer" className="block">
+                <Image
+                  src="/ui/appstore.png"
+                  alt="Download on the App Store"
+                  width={120}
+                  height={40}
+                  className="w-30 h-10"
+                />
+              </a>
             </div>
 
             </div>
