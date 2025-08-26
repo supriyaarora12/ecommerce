@@ -11,6 +11,7 @@ import { WishlistProvider } from "./context/WishListContext";
 import { AuthProvider } from"../src/context/AuthContext"; // ✅ import AuthProvider
 import { AdminProvider } from "../src/context/AdminContext"; // ✅ import AdminProvider
 import { ToastProvider } from "./context/ToastContext";
+import { CouponProvider } from "./context/CouponContext";
 import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
@@ -44,11 +45,13 @@ export default function RootLayout({
             <AdminProvider>
               <WishlistProvider>
                 <CartProvider>
-                  <PromotionalBanner />
-                  <NavigationBar />
-                  <div className="min-h-screen">{children}</div>
-                  <Footer />
-                  <Toaster />
+                  <CouponProvider>
+                    <PromotionalBanner />
+                    <NavigationBar />
+                    <div className="min-h-screen">{children}</div>
+                    <Footer />
+                    <Toaster />
+                  </CouponProvider>
                 </CartProvider>
               </WishlistProvider>
             </AdminProvider>

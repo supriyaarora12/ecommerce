@@ -80,6 +80,10 @@ export default function ProductCard({
             alt={name}
             fill
             className="object-contain rounded-t-lg p-4"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = '/ui/product/placeholder-image.svg';
+            }}
           />
           {/* Wishlist/Trash button */}
           {isWishlist ? (

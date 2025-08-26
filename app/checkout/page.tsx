@@ -3,20 +3,27 @@
 import Image from "next/image";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../../src/context/AuthContext";
+import { useCoupon } from "../context/CouponContext";
 import RouteGuard from "../../src/components/auth/RouteGuard";
 import { useState, useEffect } from "react";
 import { createOrder } from "../../src/services/orders";
 import { addOrderToUser, getUser, saveBillingDetails } from "../../src/services/users";
+import { getActiveCoupons, Coupon } from "../../src/services/coupons";
 import { useRouter } from "next/navigation";
 import { useToast } from "../context/ToastContext";
 
 export default function CheckoutPage() {
   const { cart, clearCart } = useCart();
   const { user } = useAuth();
+  const { appliedCoupon, isApplying, applyCouponCode, removeCoupon, getDiscountAmount, getFinalTotal } = useCoupon();
   const router = useRouter();
   const { showError, showSuccess, showLoading, dismissToast } = useToast();
   const [paymentMethod, setPaymentMethod] = useState("bank");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [couponCode, setCouponCode] = useState("");
+  const [availableCoupons, setAvailableCoupons] = useState<Coupon[]>([]);
+  const [showCouponList, setShowCouponList] = useState(false);
+  const [loadingCoupons, setLoadingCoupons] = useState(false);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -31,7 +38,36 @@ export default function CheckoutPage() {
 
   const subtotal = cart.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0);
   const shipping = 0;
-  const total = subtotal + shipping;
+  const discount = getDiscountAmount(subtotal);
+  const total = getFinalTotal(subtotal) + shipping;
+  
+  const handleApplyCoupon = async () => {
+    await applyCouponCode(couponCode, subtotal);
+  };
+
+  const loadAvailableCoupons = async () => {
+    setLoadingCoupons(true);
+    try {
+      const coupons = await getActiveCoupons();
+      setAvailableCoupons(coupons);
+    } catch (error) {
+      console.error('Error loading coupons:', error);
+    } finally {
+      setLoadingCoupons(false);
+    }
+  };
+
+  const handleShowCoupons = () => {
+    if (!showCouponList) {
+      loadAvailableCoupons();
+    }
+    setShowCouponList(!showCouponList);
+  };
+
+  const handleSelectCoupon = (coupon: Coupon) => {
+    setCouponCode(coupon.code);
+    setShowCouponList(false);
+  };
 
   useEffect(() => {
     const loadBillingDetails = async () => {
@@ -137,7 +173,10 @@ const handlePlaceOrder = async () => {
       const order = {
         uid: user.uid ?? "guest",
         items: [orderItem],
-        totalAmount: itemTotal,
+        subtotal: itemTotal,
+        discount: appliedCoupon ? appliedCoupon.discountAmount : 0,
+        couponCode: appliedCoupon ? appliedCoupon.code : undefined,
+        totalAmount: appliedCoupon ? Math.max(0, itemTotal - appliedCoupon.discountAmount) : itemTotal,
         status: "pending" as const,
         billingDetails: {
           ...formData,
@@ -164,6 +203,7 @@ const handlePlaceOrder = async () => {
     await saveBillingDetails(user.uid, formData);
 
     clearCart();
+    removeCoupon(); // Clear applied coupon after successful order
 
     dismissToast(loadingToast);
     showSuccess(`${cart.length} orders placed successfully! Redirecting to your orders...`);
@@ -296,15 +336,21 @@ const handlePlaceOrder = async () => {
               </div>
               <div className="flex justify-between">
                 <span>Subtotal:</span>
-                <span>${subtotal}</span>
+                <span>${subtotal.toFixed(2)}</span>
               </div>
+              {discount > 0 && (
+                <div className="flex justify-between text-green-600">
+                  <span>Discount:</span>
+                  <span>-${discount.toFixed(2)}</span>
+                </div>
+              )}
               <div className="flex justify-between">
                 <span>Shipping:</span>
                 <span className="text-green-500">Free</span>
               </div>
               <div className="flex justify-between font-semibold text-base">
                 <span>Total:</span>
-                <span>${total}</span>
+                <span>${total.toFixed(2)}</span>
               </div>
             </div>
 
@@ -334,15 +380,115 @@ const handlePlaceOrder = async () => {
             </div>
 
             {/* Coupon Code */}
-            <div className="flex gap-3">
-              <input
-                type="text"
-                placeholder="Coupon Code"
-                className="flex-1 border border-gray-300 rounded p-3"
-              />
-              <button type="button" className="bg-red-500 text-white px-5 rounded hover:bg-red-600">
-                Apply Coupon
-              </button>
+            <div className="space-y-3">
+              <div className="flex gap-3">
+                <div className="flex-1 relative">
+                  <input
+                    type="text"
+                    placeholder="Coupon Code"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                    className="w-full border border-gray-300 rounded p-3"
+                  />
+                  <button
+                    onClick={handleShowCoupons}
+                    type="button"
+                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </button>
+                </div>
+                <button 
+                  type="button" 
+                  onClick={handleApplyCoupon}
+                  disabled={isApplying || !couponCode.trim()}
+                  className="bg-red-500 text-white px-5 rounded hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                >
+                  {isApplying ? 'Applying...' : 'Apply Coupon'}
+                </button>
+              </div>
+
+              {/* Available Coupons Dropdown */}
+              {showCouponList && (
+                <div className="border border-gray-200 rounded-lg bg-white shadow-lg max-h-60 overflow-y-auto">
+                  {loadingCoupons ? (
+                    <div className="p-4 text-center text-gray-500">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-red-500 mx-auto"></div>
+                      <p className="mt-2 text-sm">Loading coupons...</p>
+                    </div>
+                  ) : availableCoupons.length > 0 ? (
+                    <div className="p-2">
+                      <h4 className="text-sm font-medium text-gray-700 mb-2 px-2">Available Coupons:</h4>
+                      {availableCoupons.map((coupon) => (
+                        <button
+                          key={coupon.id}
+                          onClick={() => handleSelectCoupon(coupon)}
+                          className="w-full text-left p-3 hover:bg-gray-50 rounded-md border-b border-gray-100 last:border-b-0"
+                        >
+                          <div className="flex justify-between items-start">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <span className="font-medium text-red-600">{coupon.code}</span>
+                                <span className={`text-xs px-2 py-1 rounded-full ${
+                                  coupon.type === 'percentage' 
+                                    ? 'bg-blue-100 text-blue-800' 
+                                    : 'bg-green-100 text-green-800'
+                                }`}>
+                                  {coupon.type === 'percentage' ? 'Percentage' : 'Fixed'}
+                                </span>
+                              </div>
+                              <p className="text-sm text-gray-600 mt-1">{coupon.description}</p>
+                              <div className="text-xs text-gray-500 mt-1">
+                                {coupon.minAmount && `Min. order: $${coupon.minAmount}`}
+                                {coupon.maxDiscount && coupon.type === 'percentage' && ` • Max discount: $${coupon.maxDiscount}`}
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <div className="font-semibold text-green-600">
+                                {coupon.type === 'percentage' ? `${coupon.value}% OFF` : `$${coupon.value} OFF`}
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                {coupon.usedCount} / {coupon.usageLimit || '∞'} used
+                              </div>
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="p-4 text-center text-gray-500">
+                      <p className="text-sm">No coupons available at the moment.</p>
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {/* Applied Coupon Display */}
+              {appliedCoupon && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-green-800 font-medium text-sm">
+                        Coupon Applied: {appliedCoupon.code}
+                      </p>
+                      <p className="text-green-600 text-xs">
+                        {appliedCoupon.type === 'percentage' 
+                          ? `${appliedCoupon.value}% off` 
+                          : `$${appliedCoupon.value} off`
+                        } - You saved ${appliedCoupon.discountAmount.toFixed(2)}
+                      </p>
+                    </div>
+                    <button
+                      onClick={removeCoupon}
+                      className="text-red-500 hover:text-red-700 text-xs font-medium"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Place Order */}

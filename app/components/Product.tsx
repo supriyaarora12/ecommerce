@@ -122,10 +122,10 @@ export default function Product({
 
   return (
     <Link href={`/product/${id}`} className="block">
-      <div className="w-full max-w-[280px] bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 p-3 sm:p-4">
+      <div className="w-full bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 p-3 sm:p-4">
         {/* Product Image */}
         <div className="relative mb-4 group">
-          <div className="bg-gray-100 rounded-lg p-4 h-40 sm:h-48 flex items-center justify-center overflow-hidden">
+          <div className="bg-gray-100 rounded-lg p-4 h-32 sm:h-40 md:h-48 flex items-center justify-center overflow-hidden">
             <Image
               src={image}
               alt={name}
@@ -136,6 +136,12 @@ export default function Product({
                 const target = e.target as HTMLImageElement;
                 target.src = '/ui/product/placeholder-image.svg';
               }}
+              onLoad={(e) => {
+                // Image loaded successfully
+                const target = e.target as HTMLImageElement;
+                target.style.opacity = '1';
+              }}
+              style={{ opacity: 0, transition: 'opacity 0.3s ease-in-out' }}
             />
           </div>
           
@@ -186,7 +192,7 @@ export default function Product({
           
           {/* Pricing */}
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-red-500 font-bold text-base sm:text-lg">
+            <span className="text-red-500 font-bold text-sm sm:text-base lg:text-lg">
               ${discountedPrice}
             </span>
             {originalPrice > discountedPrice && (

@@ -435,6 +435,10 @@ export default function ProductDetailPage() {
             width={500}
             height={500}
             className="rounded-lg border w-full h-auto"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = '/ui/product/placeholder-image.svg';
+            }}
           />
           {/* Discount Badge */}
           {productDiscount > 0 && (
@@ -462,6 +466,10 @@ export default function ProductDetailPage() {
                   alt="star"
                   width={16}
                   height={16}
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = '/ui/product/placeholder-image.svg';
+                  }}
                 />
               ))}
               <span className="text-gray-500 text-sm ml-1">({productReviews})</span>
@@ -609,6 +617,10 @@ export default function ProductDetailPage() {
                           alt={relatedProduct.name} 
                           fill
                           className="object-contain p-4 hover:scale-105 transition-transform duration-200" 
+                          onError={(e) => {
+                            const target = e.target as HTMLImageElement;
+                            target.src = '/ui/product/placeholder-image.svg';
+                          }}
                         />
                       </div>
                     </Link>

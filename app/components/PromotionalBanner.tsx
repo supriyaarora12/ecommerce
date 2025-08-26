@@ -16,15 +16,15 @@ export default function PromotionalBanner() {
 
     return (
         <div className="relative">
-
             {/* Main banner */}
-            <div className="bg-black text-white px-4 py-3 flex items-center justify-between">
-                <div className="max-w-[1330px] w-full px-8 mx-auto flex items-center justify-between">
-
+            <div className="bg-black text-white px-2 sm:px-4 py-2 sm:py-3">
+                <div className="max-w-[1330px] w-full px-2 sm:px-4 lg:px-8 mx-auto flex items-center justify-between">
                     {/* Promotional text */}
                     <div className="flex-1 text-center">
-                        <span className="text-sm">
-                            Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!{' '}
+                        <span className="text-xs sm:text-sm leading-tight">
+                            <span className="hidden sm:inline">Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!</span>
+                            <span className="sm:hidden">Summer Sale - OFF 50%!</span>
+                            {' '}
                             <a href="#" className="underline hover:text-gray-300 transition-colors">
                                 ShopNow
                             </a>
@@ -32,14 +32,15 @@ export default function PromotionalBanner() {
                     </div>
 
                     {/* Language dropdown */}
-                    <div className="relative  mr-[115px] ml-4">
+                    <div className="relative ml-2 sm:ml-4 lg:mr-[115px]">
                         <button
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                            className="flex items-center space-x-1 text-sm hover:text-gray-300 transition-colors"
+                            className="flex items-center space-x-1 text-xs sm:text-sm hover:text-gray-300 transition-colors whitespace-nowrap"
                         >
-                            <span>{selectedLanguage.name}</span>
+                            <span className="hidden sm:inline">{selectedLanguage.name}</span>
+                            <span className="sm:hidden">EN</span>
                             <svg
-                                className={`w-3 h-3 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+                                className={`w-2 h-2 sm:w-3 sm:h-3 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -55,7 +56,7 @@ export default function PromotionalBanner() {
 
                         {/* Dropdown menu */}
                         {isDropdownOpen && (
-                            <div className="absolute right-0 top-full mt-1 bg-white text-black rounded-md shadow-lg border border-gray-200 min-w-32 z-50">
+                            <div className="absolute right-0 top-full mt-1 bg-white text-black rounded-md shadow-lg border border-gray-200 min-w-20 sm:min-w-24 lg:min-w-32 z-50">
                                 {languages.map((language) => (
                                     <button
                                         key={language.code}
@@ -63,14 +64,12 @@ export default function PromotionalBanner() {
                                             setSelectedLanguage(language);
                                             setIsDropdownOpen(false);
                                         }}
-                                        className={`block w-full text-left px-4 py-2 text-sm hover:bg-gray-100 transition-colors ${selectedLanguage.code === language.code ? 'bg-gray-100' : ''
+                                        className={`block w-full text-left px-2 sm:px-3 lg:px-4 py-2 text-xs sm:text-sm hover:bg-gray-100 transition-colors ${selectedLanguage.code === language.code ? 'bg-gray-100' : ''
                                             }`}
                                     >
                                         {language.name}
                                     </button>
                                 ))}
-
-                                
                             </div>
                         )}
                     </div>

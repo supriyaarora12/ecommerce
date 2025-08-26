@@ -18,6 +18,7 @@ export default function AdminLayout({
     { href: "/admin/order", label: "Orders", icon: "📦" },
     { href: "/admin/products", label: "Products", icon: "🛍️" },
     { href: "/admin/users", label: "Users", icon: "👥" },
+    { href: "/admin/coupons", label: "Coupons", icon: "🎫" },
     { href: "/admin/dashboard", label: "Dashboard", icon: "📊" },
   ];
 
