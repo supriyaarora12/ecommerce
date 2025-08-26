@@ -36,33 +36,33 @@ export default function NavigationBar() {
   };
 
   return (
-    <nav className="bg-white border-b pl-[117px] pr-[177px] border-gray-200">
-      <div className=" w-full px-4 sm:px-8  flex items-center justify-between py-4">
+    <nav className="bg-white border-b px-4 sm:px-6 lg:pl-[117px] lg:pr-[177px] border-gray-200">
+      <div className="w-full flex items-center justify-between py-3 sm:py-4">
         
         {/* Brand */}
         <div className="flex items-center">
-          <Link href="/" className="text-xl sm:text-2xl font-bold text-black">
+          <Link href="/" className="text-lg sm:text-xl lg:text-2xl font-bold text-black">
             Exclusive
           </Link>
         </div>
 
-        {/* Desktop Navigation Links - Hidden below 930px */}
-        <div className="hidden lg:flex items-center space-x-8">
-          <Link href="/" className="text-gray-700 hover:text-black transition-colors">
+        {/* Desktop Navigation Links - Hidden below 1024px */}
+        <div className="hidden xl:flex items-center space-x-6 lg:space-x-8">
+          <Link href="/" className="text-gray-700 hover:text-black transition-colors text-sm lg:text-base">
             Home
           </Link>
-          <Link href="/contact" className="text-gray-700 hover:text-black transition-colors">
+          <Link href="/contact" className="text-gray-700 hover:text-black transition-colors text-sm lg:text-base">
             Contact
           </Link>
-          <Link href="/about" className="text-gray-700 hover:text-black transition-colors">
+          <Link href="/about" className="text-gray-700 hover:text-black transition-colors text-sm lg:text-base">
             About
           </Link>
           {!loading && !user && (
             <>
-              <Link href="/login" className="text-gray-700 hover:text-black transition-colors">
+              <Link href="/login" className="text-gray-700 hover:text-black transition-colors text-sm lg:text-base">
                 Login
               </Link>
-              <Link href="/signup" className="text-gray-700 hover:text-black transition-colors">
+              <Link href="/signup" className="text-gray-700 hover:text-black transition-colors text-sm lg:text-base">
                 Sign Up
               </Link>
             </>
@@ -70,7 +70,7 @@ export default function NavigationBar() {
         </div>
 
         {/* Search & Icons */}
-        <div className="flex items-center space-x-2 sm:space-x-4">
+        <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-4">
           
           {/* Search - Only show on desktop */}
           <div className="hidden lg:block relative">
@@ -80,11 +80,11 @@ export default function NavigationBar() {
               value={searchQuery}
               onChange={handleSearchChange}
               onFocus={handleSearchFocus}
-              className="w-64 px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent"
+              className="w-48 xl:w-64 px-3 lg:px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent text-sm lg:text-base"
             />
             <button className="absolute right-3 top-1/2 transform -translate-y-1/2">
               <svg
-                className="w-5 h-5 text-gray-500"
+                className="w-4 h-4 lg:w-5 lg:h-5 text-gray-500"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -107,10 +107,10 @@ export default function NavigationBar() {
           {/* Wishlist (Heart) */}
           <Link
             href="/wishlist"
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors relative"
+            className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition-colors relative"
           >
             <svg
-              className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700"
+              className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-gray-700"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -123,7 +123,7 @@ export default function NavigationBar() {
               />
             </svg>
             {wishlist.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
                 {wishlist.length}
               </span>
             )}
@@ -132,10 +132,10 @@ export default function NavigationBar() {
           {/* Cart */}
           <Link
             href="/cart"
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors relative"
+            className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition-colors relative"
           >
             <svg
-              className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700"
+              className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-gray-700"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -148,7 +148,7 @@ export default function NavigationBar() {
               />
             </svg>
             {cart.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center">
                 {cart.length}
               </span>
             )}
@@ -157,13 +157,13 @@ export default function NavigationBar() {
           {/* Account Dropdown - Only show if user is logged in */}
           {!loading && user && <AccountDropdown />}
 
-          {/* Hamburger Menu Button - Show below 930px */}
+          {/* Hamburger Menu Button - Show below 1024px */}
           <button
             onClick={toggleMobileMenu}
-            className="lg:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="xl:hidden p-1.5 sm:p-2 hover:bg-gray-100 rounded-full transition-colors"
           >
             <svg
-              className="w-6 h-6 text-gray-700"
+              className="w-5 h-5 sm:w-6 sm:h-6 text-gray-700"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -190,7 +190,7 @@ export default function NavigationBar() {
 
       {/* Mobile Menu - Show when hamburger is clicked */}
       {isMobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-200">
+        <div className="xl:hidden bg-white border-t border-gray-200">
           <div className="px-4 py-4 space-y-4">
             {/* Mobile Search */}
             <div className="relative">
@@ -200,11 +200,11 @@ export default function NavigationBar() {
                 value={searchQuery}
                 onChange={handleSearchChange}
                 onFocus={handleSearchFocus}
-                className="w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent"
+                className="w-full px-4 py-2 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300 focus:border-transparent text-sm"
               />
               <button className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 <svg
-                  className="w-5 h-5 text-gray-500"
+                  className="w-4 h-4 sm:w-5 sm:h-5 text-gray-500"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -228,21 +228,21 @@ export default function NavigationBar() {
             <div className="flex flex-col space-y-3">
               <Link 
                 href="/" 
-                className="text-gray-700 hover:text-black transition-colors py-2 border-b border-gray-100"
+                className="text-gray-700 hover:text-black transition-colors py-2 border-b border-gray-100 text-sm sm:text-base"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Home
               </Link>
               <Link 
                 href="/contact" 
-                className="text-gray-700 hover:text-black transition-colors py-2 border-b border-gray-100"
+                className="text-gray-700 hover:text-black transition-colors py-2 border-b border-gray-100 text-sm sm:text-base"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Contact
               </Link>
               <Link 
                 href="/about" 
-                className="text-gray-700 hover:text-black transition-colors py-2 border-b border-gray-100"
+                className="text-gray-700 hover:text-black transition-colors py-2 border-b border-gray-100 text-sm sm:text-base"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 About
@@ -251,14 +251,14 @@ export default function NavigationBar() {
                 <>
                   <Link 
                     href="/login" 
-                    className="text-gray-700 hover:text-black transition-colors py-2 border-b border-gray-100"
+                    className="text-gray-700 hover:text-black transition-colors py-2 border-b border-gray-100 text-sm sm:text-base"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Login
                   </Link>
                   <Link 
                     href="/signup" 
-                    className="text-gray-700 hover:text-black transition-colors py-2 border-b border-gray-100"
+                    className="text-gray-700 hover:text-black transition-colors py-2 border-b border-gray-100 text-sm sm:text-base"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Sign Up

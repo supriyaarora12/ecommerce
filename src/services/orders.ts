@@ -15,6 +15,9 @@ export interface Order {
   id?: string;
   uid: string;
   items: OrderItem[];
+  subtotal: number;
+  discount?: number;
+  couponCode?: string;
   totalAmount: number;
   status: "pending" | "paid" | "shipped" | "delivered" | "cancelled";
   billingDetails: {

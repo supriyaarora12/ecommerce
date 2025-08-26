@@ -72,6 +72,10 @@ export default function CartPage() {
                       width={64}
                       height={64}
                       className="rounded"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = '/ui/product/placeholder-image.svg';
+                      }}
                     />
                     <span>{item.name}</span>
                   </td>

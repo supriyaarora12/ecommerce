@@ -44,43 +44,43 @@ export default function PromotionalBanner() {
     }, []);
 
     return (
-        <section className="container pl-[117px] pr-[117px] px-4 py-12">
-            <div className="bg-gray-900 overflow-hidden" style={{ aspectRatio: '1170/500' }}>
-                <div className="flex items-cente justify-start relative flex-col lg:flex-row h-full">
+        <section className="container px-4 lg:pl-[117px] lg:pr-[117px] py-8 sm:py-12">
+            <div className="bg-gray-900 overflow-hidden rounded-lg" style={{ aspectRatio: '1170/500' }}>
+                <div className="flex items-center justify-start relative flex-col lg:flex-row h-full">
 
                     {/* Left Section - Text and CTA */}
-                    <div className="flex-1 p-8 lg:p-12 text-white relative z-10 flex flex-col justify-center">
-                        <div className="mb-4">
+                    <div className="flex-1 p-4 sm:p-6 lg:p-12 text-white relative z-10 flex flex-col justify-center">
+                        <div className="mb-3 sm:mb-4">
                             <span className="text-green-400 text-xs sm:text-sm font-medium">Categories</span>
                         </div>
 
-                        <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-8 leading-tight">
+                        <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4 sm:mb-6 lg:mb-8 leading-tight">
                             Enhance Your<br />
                             Music Experience
                         </h2>
 
                         {/* Countdown Timer */}
-                        <div className="flex gap-2 sm:gap-4 mb-8">
-                            <div className="bg-white text-gray-900 rounded-full w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex flex-col items-center justify-center">
-                                <span className="text-sm sm:text-base lg:text-lg font-bold">{timeLeft.hours.toString().padStart(2, '0')}</span>
+                        <div className="flex gap-1 sm:gap-2 lg:gap-4 mb-4 sm:mb-6 lg:mb-8">
+                            <div className="bg-white text-gray-900 rounded-full w-8 h-8 sm:w-10 sm:h-10 lg:w-16 lg:h-16 flex flex-col items-center justify-center">
+                                <span className="text-xs sm:text-sm lg:text-lg font-bold">{timeLeft.hours.toString().padStart(2, '0')}</span>
                                 <span className="text-xs">Hours</span>
                             </div>
-                            <div className="bg-white text-gray-900 rounded-full w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex flex-col items-center justify-center">
-                                <span className="text-sm sm:text-base lg:text-lg font-bold">{timeLeft.days.toString().padStart(2, '0')}</span>
+                            <div className="bg-white text-gray-900 rounded-full w-8 h-8 sm:w-10 sm:h-10 lg:w-16 lg:h-16 flex flex-col items-center justify-center">
+                                <span className="text-xs sm:text-sm lg:text-lg font-bold">{timeLeft.days.toString().padStart(2, '0')}</span>
                                 <span className="text-xs">Days</span>
                             </div>
-                            <div className="bg-white text-gray-900 rounded-full w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex flex-col items-center justify-center">
-                                <span className="text-sm sm:text-base lg:text-lg font-bold">{timeLeft.minutes.toString().padStart(2, '0')}</span>
+                            <div className="bg-white text-gray-900 rounded-full w-8 h-8 sm:w-10 sm:h-10 lg:w-16 lg:h-16 flex flex-col items-center justify-center">
+                                <span className="text-xs sm:text-sm lg:text-lg font-bold">{timeLeft.minutes.toString().padStart(2, '0')}</span>
                                 <span className="text-xs">Minutes</span>
                             </div>
-                            <div className="bg-white text-gray-900 rounded-full w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 flex flex-col items-center justify-center">
-                                <span className="text-sm sm:text-base lg:text-lg font-bold">{timeLeft.seconds.toString().padStart(2, '0')}</span>
+                            <div className="bg-white text-gray-900 rounded-full w-8 h-8 sm:w-10 sm:h-10 lg:w-16 lg:h-16 flex flex-col items-center justify-center">
+                                <span className="text-xs sm:text-sm lg:text-lg font-bold">{timeLeft.seconds.toString().padStart(2, '0')}</span>
                                 <span className="text-xs">Seconds</span>
                             </div>
                         </div>
 
                         {/* Call to Action Button */}
-                        <button className="bg-green-500 w-fit hover:bg-green-600 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base lg:text-lg transition-colors">
+                        <button className="bg-green-500 w-fit hover:bg-green-600 text-white px-3 sm:px-4 lg:px-8 py-2 sm:py-3 rounded-lg font-semibold text-sm sm:text-base lg:text-lg transition-colors">
                             Buy Now!
                         </button>
                     </div>

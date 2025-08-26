@@ -36,6 +36,7 @@ export default function ProductCarousel({
 }: ProductCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [isTablet, setIsTablet] = useState(false);
   const [countdown, setCountdown] = useState({
     days: 0,
     hours: 0,
@@ -44,14 +45,16 @@ export default function ProductCarousel({
   });
 
   useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 640);
+    const checkScreenSize = () => {
+      const width = window.innerWidth;
+      setIsMobile(width < 640);
+      setIsTablet(width >= 640 && width < 1024);
     };
     
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
     
-    return () => window.removeEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
   // Countdown timer effect
@@ -89,14 +92,16 @@ export default function ProductCarousel({
   }, [showCountdown]);
 
   const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % Math.max(1, products.length - 4));
+    const maxIndex = Math.max(0, products.length - (isMobile ? 1 : isTablet ? 2 : 4));
+    setCurrentIndex((prev) => (prev + 1) % (maxIndex + 1));
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + Math.max(1, products.length - 4)) % Math.max(1, products.length - 4));
+    const maxIndex = Math.max(0, products.length - (isMobile ? 1 : isTablet ? 2 : 4));
+    setCurrentIndex((prev) => (prev - 1 + maxIndex + 1) % (maxIndex + 1));
   };
 
-  const slideWidth = isMobile ? 260 : 300;
+  const slideWidth = isMobile ? 280 : isTablet ? 320 : 300;
 
   // Format countdown values to always show two digits
   const formatTime = (value: number) => value.toString().padStart(2, '0');
@@ -105,16 +110,16 @@ export default function ProductCarousel({
     <section className={`w-full px-4 sm:px-6 lg:px-0 py-8 sm:py-12 ${className}`}>
       {/* Header */}
       {(title || subtitle || showCountdown) && (
-        <div className="flex flex-col sm:flex-row sm:pl-[117px] items-start sm:items-center justify-between mb-8 gap-4">
+        <div className="flex flex-col sm:flex-row lg:pl-[117px] items-start sm:items-center justify-between mb-8 gap-4">
           <div className="flex items-center gap-4">
             {subtitle && (
               <div className="flex items-center gap-2">
                 <div className="w-5 h-10 rounded bg-red-500"></div>
-                <span className="text-gray-600 font-medium">{subtitle}</span>
+                <span className="text-gray-600 font-medium text-sm sm:text-base">{subtitle}</span>
               </div>
             )}
             {title && (
-              <h2 className="text-3xl font-bold text-gray-900">{title}</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">{title}</h2>
             )}
           </div>
           
@@ -176,17 +181,18 @@ export default function ProductCarousel({
       )}
 
       {/* Products Grid */}
-      <div className="relative pl-[117px] overflow-hidden">
+      <div className="relative lg:pl-[117px] overflow-hidden">
         <div 
           className="flex gap-4 sm:gap-6 transition-transform duration-300 ease-in-out"
           style={{ transform: `translateX(-${currentIndex * slideWidth}px)` }}
         >
           {products.map((product) => (
-            <Product
-              key={product.id}
-              {...product}
-              showAddToCart={showAddToCart}
-            />
+            <div key={product.id} className="flex-shrink-0" style={{ width: `${slideWidth}px` }}>
+              <Product
+                {...product}
+                showAddToCart={showAddToCart}
+              />
+            </div>
           ))}
         </div>
       </div>

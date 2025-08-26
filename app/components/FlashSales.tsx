@@ -80,9 +80,9 @@ export default function FlashSales() {
       />
       
       {/* View All Products Button */}
-      <div className="flex justify-center  mt-8">
+      <div className="flex justify-center mt-6 sm:mt-8">
         <Link href="/products">
-          <button className="bg-red-500 text-white px-8 py-3 rounded-md font-medium hover:bg-red-600 transition-colors">
+          <button className="bg-red-500 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-md font-medium hover:bg-red-600 transition-colors text-sm sm:text-base">
             View All Products
           </button>
         </Link>

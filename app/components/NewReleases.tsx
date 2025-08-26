@@ -96,15 +96,15 @@ const newReleaseProducts = [
 
 export default function NewReleases() {
     return (
-        <section className="container pl-[117px] pr-[117px] px-4 py-12">
+        <section className="container px-4 lg:pl-[117px] lg:pr-[117px] py-12">
             {/* Header */}
-            <div className="flex items-center justify-between mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
                 <div className="flex flex-col gap-3">
                     <div className="flex items-center gap-3">
                         <div className="w-5 h-10 bg-red-500 rounded"></div>
                         <span className="text-sm text-red-500 font-medium">Featured</span>
                     </div>
-                    <h2 className="text-3xl font-bold text-gray-900">New & Featured</h2>
+                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900">New & Featured</h2>
                 </div>
                 <div className="flex items-center gap-4">
                     <Link href="/products">
@@ -116,7 +116,7 @@ export default function NewReleases() {
             </div>
 
             {/* Products Grid - 2 rows with 4 products per row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                 {newReleaseProducts.map((product) => (
                     <Product
                         key={product.id}
