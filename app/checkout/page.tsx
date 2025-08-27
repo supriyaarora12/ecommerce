@@ -11,6 +11,7 @@ import { addOrderToUser, getUser, saveBillingDetails } from "../../src/services/
 import { getActiveCoupons, Coupon } from "../../src/services/coupons";
 import { useRouter } from "next/navigation";
 import { useToast } from "../context/ToastContext";
+import BankPaymentForm, { BankPaymentDetails } from "../components/BankPaymentForm";
 
 export default function CheckoutPage() {
   const { cart, clearCart } = useCart();
@@ -35,6 +36,7 @@ export default function CheckoutPage() {
     emailAddress: "",
   });
   const [isLoadingBillingDetails, setIsLoadingBillingDetails] = useState(false);
+  const [bankPaymentDetails, setBankPaymentDetails] = useState<BankPaymentDetails | null>(null);
 
   const subtotal = cart.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0);
   const shipping = 0;
@@ -132,6 +134,12 @@ export default function CheckoutPage() {
       [e.target.name]: e.target.value,
     });
   };
+
+  const handleBankPaymentSubmit = (paymentDetails: BankPaymentDetails) => {
+    setBankPaymentDetails(paymentDetails);
+    // Now proceed with placing the order
+    handlePlaceOrder();
+  };
 const handlePlaceOrder = async () => {
   if (!user) return;
 
@@ -146,6 +154,12 @@ const handlePlaceOrder = async () => {
 
   if (cart.length === 0) {
     showError('Your cart is empty');
+    return;
+  }
+
+  // Validate bank payment details if bank payment is selected
+  if (paymentMethod === "bank" && !bankPaymentDetails) {
+    showError('Please complete the bank payment form');
     return;
   }
 
@@ -184,6 +198,15 @@ const handlePlaceOrder = async () => {
           apartment: formData.apartment || null,
         },
         paymentMethod: paymentMethod ?? "bank",
+        paymentDetails: paymentMethod === "bank" && bankPaymentDetails ? {
+          accountHolderName: bankPaymentDetails.accountHolderName,
+          accountNumber: bankPaymentDetails.accountNumber,
+          bankName: bankPaymentDetails.bankName,
+          routingNumber: bankPaymentDetails.routingNumber,
+          transactionId: bankPaymentDetails.transactionId,
+          paymentAmount: bankPaymentDetails.paymentAmount,
+          paymentStatus: "pending_verification" as const
+        } : undefined,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
@@ -491,14 +514,25 @@ const handlePlaceOrder = async () => {
               )}
             </div>
 
-            {/* Place Order */}
-            <button 
-              onClick={handlePlaceOrder}
-              disabled={isProcessing}
-              className="w-full bg-red-500 text-white py-3 rounded hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
-            >
-              {isProcessing ? 'Processing...' : `Place ${cart.length} Order${cart.length > 1 ? 's' : ''}`}
-            </button>
+            {/* Bank Payment Form */}
+            {paymentMethod === "bank" && (
+              <BankPaymentForm
+                totalAmount={total}
+                onPaymentSubmit={handleBankPaymentSubmit}
+                isProcessing={isProcessing}
+              />
+            )}
+
+            {/* Place Order Button - Only show for COD */}
+            {paymentMethod === "cod" && (
+              <button 
+                onClick={handlePlaceOrder}
+                disabled={isProcessing}
+                className="w-full bg-red-500 text-white py-3 rounded hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+              >
+                {isProcessing ? 'Processing...' : `Place ${cart.length} Order${cart.length > 1 ? 's' : ''}`}
+              </button>
+            )}
           </div>
         </div>
       </div>
