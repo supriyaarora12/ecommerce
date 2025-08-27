@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function PromotionalBanner() {
     const [timeLeft, setTimeLeft] = useState({
@@ -87,9 +88,11 @@ export default function PromotionalBanner() {
 
                     {/* Right Section - Product Image */}
                     <div className="absolute right-0 top-0 w-full h-full">
-                        <img
+                        <Image
                             src="/ui/homepage/jbl.svg"
                             alt="JBL Speaker"
+                            width={500}
+                            height={500}
                             className="w-full h-full object-contain object-right"
                         />
                     </div>

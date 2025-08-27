@@ -1,7 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
-import { validateCoupon, applyCoupon, AppliedCoupon, Coupon, initializeSampleCoupons } from '../../src/services/coupons';
+import { validateCoupon, AppliedCoupon, initializeSampleCoupons } from '../../src/services/coupons';
 import { useToast } from './ToastContext';
 
 interface CouponContextType {
@@ -9,7 +9,7 @@ interface CouponContextType {
   isApplying: boolean;
   applyCouponCode: (code: string, subtotal: number) => Promise<boolean>;
   removeCoupon: () => void;
-  getDiscountAmount: (subtotal: number) => number;
+  getDiscountAmount: () => number;
   getFinalTotal: (subtotal: number) => number;
 }
 
@@ -107,13 +107,13 @@ export const CouponProvider = ({ children }: { children: ReactNode }) => {
     showSuccess('Coupon removed');
   };
 
-  const getDiscountAmount = (subtotal: number): number => {
+  const getDiscountAmount = (): number => {
     if (!appliedCoupon) return 0;
     return appliedCoupon.discountAmount;
   };
 
   const getFinalTotal = (subtotal: number): number => {
-    const discount = getDiscountAmount(subtotal);
+    const discount = getDiscountAmount();
     return Math.max(0, subtotal - discount);
   };
 

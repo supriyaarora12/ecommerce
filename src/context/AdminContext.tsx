@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { useAuth } from './AuthContext';
 import { getAllOrders, updateOrderStatus, Order } from '../services/orders';
 import { QueryDocumentSnapshot , DocumentData} from 'firebase/firestore';
@@ -50,31 +50,35 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setLoading(false);
   }, [user]);
 
-  const loadOrders = async (page: number = 1, status: string = statusFilter) => {
+  const loadOrders = useCallback(async (page: number = 1, status?: string) => {
     if (!isAdmin) return;
+
+    const currentStatus = status || statusFilter;
 
     try {
       setLoadingOrders(true);
       
       // Reset pagination if filters change
-      if (status !== statusFilter) {
+      if (status && status !== statusFilter) {
         setLastDoc(null);
         setCurrentPage(1);
       }
 
-      const result = await getAllOrders(pageSize, lastDoc, status);
+      const result = await getAllOrders(pageSize, lastDoc, currentStatus);
       
       setOrders(result.orders);
       setTotalOrders(result.total);
       setLastDoc(result.lastDoc);
       setCurrentPage(page);
-      setStatusFilter(status);
+      if (status && status !== statusFilter) {
+        setStatusFilter(status);
+      }
     } catch (error) {
       console.error('Error loading orders:', error);
     } finally {
       setLoadingOrders(false);
     }
-  };
+  }, [isAdmin, pageSize, lastDoc, statusFilter]);
 
   const updateOrder = async (orderId: string, status: Order["status"]) => {
     if (!isAdmin) return;
@@ -89,22 +93,22 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }
   };
 
-  const handleSetStatusFilter = (status: string) => {
+  const handleSetStatusFilter = useCallback((status: string) => {
     setStatusFilter(status);
     loadOrders(1, status);
-  };
+  }, [loadOrders]);
 
-  const handleSetSearchQuery = (query: string) => {
+  const handleSetSearchQuery = useCallback((query: string) => {
     setSearchQuery(query);
     loadOrders(1, statusFilter);
-  };
+  }, [loadOrders, statusFilter]);
 
-  const handleSetPageSize = (size: number) => {
+  const handleSetPageSize = useCallback((size: number) => {
     setPageSize(size);
     setLastDoc(null);
     setCurrentPage(1);
     loadOrders(1, statusFilter);
-  };
+  }, [loadOrders, statusFilter]);
 
   return (
     <AdminContext.Provider value={{

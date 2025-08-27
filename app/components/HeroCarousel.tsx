@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface CarouselSlide {
   id: number;
@@ -64,7 +65,7 @@ export default function HeroCarousel() {
   };
 
   return (
-    <div className="relative w-full bg-black rounded-lg overflow-hidden" style={{ aspectRatio: '21/8' }}>
+    <div className="relative w-full bg-black rounded-lg overflow-hidden  h-auto sm:h-[280px] md:h-[350px] lg:h-auto" style={{ aspectRatio: '21/8' }}>
       {/* Carousel Slides */}
       <div className="relative w-full h-full">
         {carouselSlides.map((slide, index) => (
@@ -79,9 +80,11 @@ export default function HeroCarousel() {
               {/* Right Image */}
               <div className="flex-1 z-5 absolute w-496px inset-0 flex items-center justify-end">
                 <div className="relative">
-                  <img
+                  <Image
                     src={slide.image}
                     alt={slide.subtitle}
+                    width={496}
+                    height={350}
                     className="object-cover"
                   />
                 </div>

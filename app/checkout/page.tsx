@@ -38,7 +38,7 @@ export default function CheckoutPage() {
 
   const subtotal = cart.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0);
   const shipping = 0;
-  const discount = getDiscountAmount(subtotal);
+  const discount = getDiscountAmount();
   const total = getFinalTotal(subtotal) + shipping;
   
   const handleApplyCoupon = async () => {
