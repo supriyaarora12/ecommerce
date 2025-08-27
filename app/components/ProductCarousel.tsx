@@ -107,7 +107,7 @@ export default function ProductCarousel({
   const formatTime = (value: number) => value.toString().padStart(2, '0');
 
   return (
-    <section className={`w-full px-4 sm:px-6 lg:px-0 py-8 sm:py-12 ${className}`}>
+    <section className={`w-full px-4 sm:px-6 lg:px-0 py-8 sm:py-12 lg:py-8 ${className}`}>
       {/* Header */}
       {(title || subtitle || showCountdown) && (
         <div className="flex flex-col sm:flex-row lg:pl-[117px] items-start sm:items-center justify-between mb-8 gap-4">

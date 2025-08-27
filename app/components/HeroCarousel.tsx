@@ -64,7 +64,7 @@ export default function HeroCarousel() {
   };
 
   return (
-    <div className="relative w-full bg-black rounded-lg overflow-hidden" style={{ aspectRatio: '21/8' }}>
+    <div className="relative w-full bg-black rounded-lg overflow-hidden  h-auto sm:h-[280px] md:h-[350px] lg:h-auto" style={{ aspectRatio: '21/8' }}>
       {/* Carousel Slides */}
       <div className="relative w-full h-full">
         {carouselSlides.map((slide, index) => (

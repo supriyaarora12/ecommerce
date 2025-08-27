@@ -129,6 +129,36 @@ export default function OrdersPage() {
                   </div>
                 </div>
 
+                {/* Bank Payment Details */}
+                {order.paymentMethod === "bank" && order.paymentDetails && (
+                  <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h4 className="font-semibold mb-2 text-blue-900">Bank Payment Details</h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+                      <p><span className="font-medium text-blue-800">Bank:</span> {order.paymentDetails.bankName}</p>
+                      <p><span className="font-medium text-blue-800">Account Holder:</span> {order.paymentDetails.accountHolderName}</p>
+                      <p><span className="font-medium text-blue-800">Transaction ID:</span> {order.paymentDetails.transactionId}</p>
+                      <p><span className="font-medium text-blue-800">Payment Status:</span> 
+                        <span className={`ml-1 px-2 py-1 rounded-full text-xs font-medium ${
+                          order.paymentDetails.paymentStatus === "verified" 
+                            ? "bg-green-100 text-green-800" 
+                            : order.paymentDetails.paymentStatus === "failed"
+                            ? "bg-red-100 text-red-800"
+                            : "bg-yellow-100 text-yellow-800"
+                        }`}>
+                          {order.paymentDetails.paymentStatus?.replace('_', ' ').toUpperCase()}
+                        </span>
+                      </p>
+                    </div>
+                    {order.paymentDetails.paymentStatus === "pending_verification" && (
+                      <div className="mt-3 p-3 bg-yellow-100 border border-yellow-300 rounded-lg">
+                        <p className="text-sm text-yellow-800">
+                          <strong>Note:</strong> Your bank payment is being verified. We'll update the status once confirmed.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 {/* Order Items */}
                 <div>
                   <h4 className="font-semibold mb-3">Order Items</h4>
