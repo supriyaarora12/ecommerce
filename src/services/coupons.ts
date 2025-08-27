@@ -1,5 +1,5 @@
 import { db } from '../lib/firebase';
-import { collection, doc, getDoc, getDocs, query, where, addDoc, updateDoc, deleteDoc, serverTimestamp, increment } from 'firebase/firestore';
+import { collection, doc, getDocs, query, where, addDoc, updateDoc, deleteDoc, serverTimestamp, increment } from 'firebase/firestore';
 
 export interface Coupon {
   id: string;

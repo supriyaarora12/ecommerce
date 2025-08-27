@@ -11,7 +11,6 @@ import { addOrderToUser, getUser, saveBillingDetails } from "../../src/services/
 import { getActiveCoupons, Coupon } from "../../src/services/coupons";
 import { useRouter } from "next/navigation";
 import { useToast } from "../context/ToastContext";
-import BankPaymentForm, { BankPaymentDetails } from "../components/BankPaymentForm";
 
 export default function CheckoutPage() {
   const { cart, clearCart } = useCart();
@@ -22,7 +21,6 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState("bank");
   const [isProcessing, setIsProcessing] = useState(false);
   const [couponCode, setCouponCode] = useState("");
-  const [showBankForm, setShowBankForm] = useState(true); // Show bank form by default since bank is default payment method
   const [availableCoupons, setAvailableCoupons] = useState<Coupon[]>([]);
   const [showCouponList, setShowCouponList] = useState(false);
   const [loadingCoupons, setLoadingCoupons] = useState(false);
@@ -40,7 +38,7 @@ export default function CheckoutPage() {
 
   const subtotal = cart.reduce((sum, item) => sum + item.discountedPrice * item.quantity, 0);
   const shipping = 0;
-  const discount = getDiscountAmount(subtotal);
+  const discount = getDiscountAmount();
   const total = getFinalTotal(subtotal) + shipping;
   
   const handleApplyCoupon = async () => {
@@ -133,106 +131,6 @@ export default function CheckoutPage() {
       ...formData,
       [e.target.name]: e.target.value,
     });
-  };
-
-  const handlePaymentMethodChange = (method: string) => {
-    setPaymentMethod(method);
-    setShowBankForm(method === "bank");
-  };
-
-  const handleBankPaymentSubmit = async (paymentDetails: BankPaymentDetails) => {
-    if (!user) return;
-
-    // Validate required fields
-    const requiredFields = ['firstName', 'lastName', 'streetAddress', 'townCity', 'phoneNumber', 'emailAddress'];
-    const missingFields = requiredFields.filter(field => !formData[field as keyof typeof formData]);
-
-    if (missingFields.length > 0) {
-      showError(`Please fill in all required fields: ${missingFields.join(', ')}`);
-      return;
-    }
-
-    if (cart.length === 0) {
-      showError('Your cart is empty');
-      return;
-    }
-
-    setIsProcessing(true);
-    const loadingToast = showLoading('Processing your bank payment and order...');
-
-    try {
-      // Create individual orders for each cart item with bank payment details
-      const orderPromises = cart.map(async (item) => {
-        // Create single item order
-        const orderItem = {
-          id: item.id ?? null,
-          name: item.name ?? "Unnamed Product",
-          image: item.image ?? "",
-          originalPrice: item.originalPrice ?? 0,
-          discountedPrice: item.discountedPrice ?? 0,
-          quantity: item.quantity ?? 1,
-          price: item.discountedPrice ?? 0
-        };
-
-        // Calculate total for this single item
-        const itemTotal = (item.discountedPrice ?? 0) * (item.quantity ?? 1);
-
-        // Create order for this item with bank payment details
-        const order = {
-          uid: user.uid ?? "guest",
-          items: [orderItem],
-          subtotal: itemTotal,
-          discount: appliedCoupon ? appliedCoupon.discountAmount : 0,
-          couponCode: appliedCoupon ? appliedCoupon.code : undefined,
-          totalAmount: appliedCoupon ? Math.max(0, itemTotal - appliedCoupon.discountAmount) : itemTotal,
-          status: "pending" as const,
-          billingDetails: {
-            ...formData,
-            companyName: formData.companyName || null,
-            apartment: formData.apartment || null,
-          },
-          paymentMethod: "bank",
-          paymentDetails: {
-            accountHolderName: paymentDetails.accountHolderName,
-            accountNumber: paymentDetails.accountNumber,
-            bankName: paymentDetails.bankName,
-            routingNumber: paymentDetails.routingNumber,
-            transactionId: paymentDetails.transactionId,
-            paymentAmount: paymentDetails.paymentAmount,
-            paymentStatus: "pending_verification"
-          },
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        };
-
-        // ✅ Remove undefined values before saving
-        const sanitizedOrder = JSON.parse(JSON.stringify(order));
-
-        const orderId = await createOrder(sanitizedOrder);
-        await addOrderToUser(user.uid, orderId);
-
-        return orderId;
-      });
-
-      await Promise.all(orderPromises);
-
-      // Save billing details
-      await saveBillingDetails(user.uid, formData);
-
-      clearCart();
-      removeCoupon(); // Clear applied coupon after successful order
-
-      dismissToast(loadingToast);
-      showSuccess(`Bank payment submitted successfully! ${cart.length} order(s) placed. We'll verify your payment and update your order status.`);
-      router.push('/orders');
-
-    } catch (error) {
-      console.error('Error processing bank payment:', error);
-      dismissToast(loadingToast);
-      showError('Failed to process bank payment. Please try again.');
-    } finally {
-      setIsProcessing(false);
-    }
   };
 const handlePlaceOrder = async () => {
   if (!user) return;
@@ -464,7 +362,7 @@ const handlePlaceOrder = async () => {
                   name="payment"
                   value="bank"
                   checked={paymentMethod === "bank"}
-                  onChange={(e) => handlePaymentMethodChange(e.target.value)}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
                 />
                 Bank
                 <Image src="/ui/checkout/bank.svg" alt="Payment Methods" width={100} height={20} />
@@ -475,7 +373,7 @@ const handlePlaceOrder = async () => {
                   name="payment"
                   value="cod"
                   checked={paymentMethod === "cod"}
-                  onChange={(e) => handlePaymentMethodChange(e.target.value)}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
                 />
                 Cash on delivery
               </label>
@@ -593,25 +491,14 @@ const handlePlaceOrder = async () => {
               )}
             </div>
 
-            {/* Bank Payment Form */}
-            {showBankForm && (
-              <BankPaymentForm
-                totalAmount={total}
-                onPaymentSubmit={handleBankPaymentSubmit}
-                isProcessing={isProcessing}
-              />
-            )}
-
-            {/* Place Order Button - Only show for COD */}
-            {!showBankForm && (
-              <button 
-                onClick={handlePlaceOrder}
-                disabled={isProcessing}
-                className="w-full bg-red-500 text-white py-3 rounded hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
-              >
-                {isProcessing ? 'Processing...' : `Place ${cart.length} Order${cart.length > 1 ? 's' : ''}`}
-              </button>
-            )}
+            {/* Place Order */}
+            <button 
+              onClick={handlePlaceOrder}
+              disabled={isProcessing}
+              className="w-full bg-red-500 text-white py-3 rounded hover:bg-red-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+              {isProcessing ? 'Processing...' : `Place ${cart.length} Order${cart.length > 1 ? 's' : ''}`}
+            </button>
           </div>
         </div>
       </div>

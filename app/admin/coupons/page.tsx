@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { getActiveCoupons, createCoupon, updateCoupon, deleteCoupon, Coupon } from '../../../src/services/coupons';
 import { useToast } from '../../context/ToastContext';
 
@@ -24,21 +24,21 @@ export default function CouponsPage() {
     isActive: true
   });
 
-  useEffect(() => {
-    loadCoupons();
-  }, []);
-
-  const loadCoupons = async () => {
+  const loadCoupons = useCallback(async () => {
     setLoading(true);
     try {
       const activeCoupons = await getActiveCoupons();
       setCoupons(activeCoupons);
-    } catch (error) {
+    } catch {
       showError('Error loading coupons');
     } finally {
       setLoading(false);
     }
-  };
+  }, [showError]);
+
+  useEffect(() => {
+    loadCoupons();
+  }, [loadCoupons]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,7 +64,7 @@ export default function CouponsPage() {
       setEditingCoupon(null);
       resetForm();
       loadCoupons();
-    } catch (error) {
+    } catch {
       showError('Error saving coupon');
     }
   };
@@ -75,9 +75,9 @@ export default function CouponsPage() {
         await deleteCoupon(couponId);
         showSuccess('Coupon deleted successfully');
         loadCoupons();
-      } catch (error) {
-        showError('Error deleting coupon');
-      }
+          } catch {
+      showError('Error deleting coupon');
+    }
     }
   };
 

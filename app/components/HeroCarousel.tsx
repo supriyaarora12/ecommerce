@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 interface CarouselSlide {
   id: number;
@@ -79,9 +80,11 @@ export default function HeroCarousel() {
               {/* Right Image */}
               <div className="flex-1 z-5 absolute w-496px inset-0 flex items-center justify-end">
                 <div className="relative">
-                  <img
+                  <Image
                     src={slide.image}
                     alt={slide.subtitle}
+                    width={496}
+                    height={350}
                     className="object-cover"
                   />
                 </div>
