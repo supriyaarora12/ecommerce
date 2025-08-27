@@ -3,6 +3,7 @@
 import { useAdmin } from "../../../src/context/AdminContext";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import BankPaymentVerification from "../../components/BankPaymentVerification";
 
 export default function AdminOrderPage() {
   const {
@@ -128,6 +129,7 @@ export default function AdminOrderPage() {
             >
               <option value="all">All Statuses</option>
               <option value="pending">Pending</option>
+              <option value="bank_pending">Bank Pending Verification</option>
               <option value="paid">Paid</option>
               <option value="shipped">Shipped</option>
               <option value="delivered">Delivered</option>
@@ -226,9 +228,16 @@ export default function AdminOrderPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
-                      {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                    </span>
+                    <div className="space-y-1">
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
+                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                      </span>
+                      {order.paymentMethod === "bank" && order.paymentDetails?.paymentStatus === "pending_verification" && (
+                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">
+                          Bank Payment Pending
+                        </span>
+                      )}
+                    </div>
                   </td>
                   <td className="px-6 py-4 text-sm font-medium text-gray-900">
                     ${order.totalAmount}
@@ -381,6 +390,17 @@ export default function AdminOrderPage() {
                       ))}
                     </div>
                   </div>
+
+                  {/* Bank Payment Verification */}
+                  {orders.find(o => o.id === selectedOrder)?.paymentMethod === "bank" && (
+                    <BankPaymentVerification
+                      order={orders.find(o => o.id === selectedOrder)!}
+                      onStatusUpdate={() => {
+                        setSelectedOrder(null);
+                        loadOrders();
+                      }}
+                    />
+                  )}
                 </div>
               )}
             </div>
