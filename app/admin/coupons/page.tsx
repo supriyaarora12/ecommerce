@@ -38,7 +38,7 @@ export default function CouponsPage() {
 
   useEffect(() => {
     loadCoupons();
-  }, [loadCoupons]);
+  }, []); // Empty dependency array
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
