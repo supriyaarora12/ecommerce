@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { useAuth } from './AuthContext';
 import { getAllOrders, updateOrderStatus, Order } from '../services/orders';
 import { QueryDocumentSnapshot , DocumentData} from 'firebase/firestore';
@@ -37,6 +37,24 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [loadingOrders, setLoadingOrders] = useState(false);
   const [lastDoc, setLastDoc] = useState<QueryDocumentSnapshot<DocumentData> | null>(null);
 
+  // Use refs to avoid dependency issues
+  const statusFilterRef = useRef(statusFilter);
+  const pageSizeRef = useRef(pageSize);
+  const lastDocRef = useRef(lastDoc);
+
+  // Update refs when state changes
+  useEffect(() => {
+    statusFilterRef.current = statusFilter;
+  }, [statusFilter]);
+
+  useEffect(() => {
+    pageSizeRef.current = pageSize;
+  }, [pageSize]);
+
+  useEffect(() => {
+    lastDocRef.current = lastDoc;
+  }, [lastDoc]);
+
   // Check if user is admin
   useEffect(() => {
     if (user) {
@@ -50,27 +68,29 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setLoading(false);
   }, [user]);
 
-  const loadOrders = useCallback(async (page: number = 1, status?: string) => {
+  const loadOrders = useCallback(async (page: number = 1, status?: string, search?: string) => {
     if (!isAdmin) return;
 
-    const currentStatus = status || statusFilter;
+    const currentStatus = status || statusFilterRef.current;
+    const currentPageSize = pageSizeRef.current;
+    const currentLastDoc = lastDocRef.current;
 
     try {
       setLoadingOrders(true);
       
       // Reset pagination if filters change
-      if (status && status !== statusFilter) {
+      if (status && status !== statusFilterRef.current) {
         setLastDoc(null);
         setCurrentPage(1);
       }
 
-      const result = await getAllOrders(pageSize, lastDoc, currentStatus);
+      const result = await getAllOrders(currentPageSize, currentLastDoc, currentStatus);
       
       setOrders(result.orders);
       setTotalOrders(result.total);
       setLastDoc(result.lastDoc);
       setCurrentPage(page);
-      if (status && status !== statusFilter) {
+      if (status && status !== statusFilterRef.current) {
         setStatusFilter(status);
       }
     } catch (error) {
@@ -78,7 +98,7 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } finally {
       setLoadingOrders(false);
     }
-  }, [isAdmin, pageSize, lastDoc, statusFilter]);
+  }, [isAdmin]); // Only depend on isAdmin
 
   const updateOrder = async (orderId: string, status: Order["status"]) => {
     if (!isAdmin) return;
@@ -100,15 +120,15 @@ export const AdminProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const handleSetSearchQuery = useCallback((query: string) => {
     setSearchQuery(query);
-    loadOrders(1, statusFilter);
-  }, [loadOrders, statusFilter]);
+    loadOrders(1, statusFilterRef.current);
+  }, [loadOrders]);
 
   const handleSetPageSize = useCallback((size: number) => {
     setPageSize(size);
     setLastDoc(null);
     setCurrentPage(1);
-    loadOrders(1, statusFilter);
-  }, [loadOrders, statusFilter]);
+    loadOrders(1, statusFilterRef.current);
+  }, [loadOrders]);
 
   return (
     <AdminContext.Provider value={{

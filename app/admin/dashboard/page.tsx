@@ -9,7 +9,7 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     loadOrders();
-  }, [loadOrders]);
+  }, []); // Empty dependency array
 
   // Calculate some basic stats
   const pendingOrders = orders.filter(order => order.status === 'pending').length;

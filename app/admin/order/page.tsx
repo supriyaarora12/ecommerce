@@ -16,7 +16,7 @@ export default function AdminOrderPage() {
     loadingOrders,
     loadOrders,
     updateOrder,
-    setStatusFilter,
+    setStatusFilter, 
     setSearchQuery,
     setPageSize,
   } = useAdmin();
@@ -24,9 +24,10 @@ export default function AdminOrderPage() {
   const [selectedOrder, setSelectedOrder] = useState<string | null>(null);
   const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
 
+  // Only load orders once when component mounts
   useEffect(() => {
     loadOrders();
-  }, [loadOrders]);
+  }, []); // Empty dependency array
 
   const getStatusColor = (status: string) => {
     switch (status) {
